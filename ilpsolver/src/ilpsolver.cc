@@ -7,6 +7,7 @@ ilpsolver::ilpsolver(const string &alphabet_file, const string &spectrum_file)
 {
 	read_alphabet(alphabet_file);
 	read_spectrum(spectrum_file);
+	compute_upper_bound();
 
 	env = new GRBEnv();
 	model = new GRBModel(*env);
@@ -32,6 +33,12 @@ int ilpsolver::solve()
 	add_range_constraints();
 	add_error_constraints();
 
+	set_objective();
+
+	model->update();
+	model->optimize();
+
+	collect_results();
 	return 0;
 }
 
@@ -89,6 +96,17 @@ int ilpsolver::read_spectrum(const string &file)
 		sstr >> m;
 		spectrum.push_back(m);
 	}
+	return 0;
+}
+
+int ilpsolver::compute_upper_bound()
+{
+	ubound = 0;
+	for(int i = 0; i < spectrum.size(); i++)
+	{
+		if(spectrum[i] > ubound) ubound = spectrum[i];
+	}
+	ubound = ubound * slots;
 	return 0;
 }
 
@@ -161,7 +179,7 @@ int ilpsolver::add_error_variables()
 	evars.clear();
 	for(int i = 0; i < spectrum.size(); i++)
 	{
-		GRBVar var = model->addVar(0, ubound, 0, GRB_CONTINUOUS);
+		GRBVar var = model->addVar(0, ubound, 1, GRB_CONTINUOUS);
 		evars.push_back(var);
 	}
 	model->update();
@@ -268,6 +286,79 @@ int ilpsolver::add_error_constraints()
 	return 0;
 }
 
+int ilpsolver::set_objective()
+{
+	GRBLinExpr expr;
+	for(int i = 0; i < evars.size(); i++) expr += evars.at(i);
+	model->setObjective(expr, GRB_MINIMIZE);
+	return 0;
+}
+
+int ilpsolver::collect_results()
+{
+	xassign.clear();
+	for(int i = 0; i < slots; i++)
+	{
+		int k = -1;
+		for(int j = 0; j < aa_list.size(); j++)
+		{
+			if(xvars[i][j].get(GRB_DoubleAttr_X) <= 0.5) continue;
+			assert(k == -1);
+			k = j;
+		}
+		assert(k >= 0);
+		xassign.push_back(k);
+	}
+
+	lassign.clear();
+	for(int p = 0; p < spectrum.size(); p++)
+	{
+		int k = -1;
+		for(int j = 0; j < slots; j++)
+		{
+			if(lvars[p][j].get(GRB_DoubleAttr_X) <= 0.5) continue;
+			assert(k == -1);
+			k = j;
+		}
+		assert(k >= 0);
+		lassign.push_back(k);
+	}
+
+	uassign.clear();
+	for(int p = 0; p < spectrum.size(); p++)
+	{
+		int k = -1;
+		for(int j = 0; j < slots; j++)
+		{
+			if(uvars[p][j].get(GRB_DoubleAttr_X) <= 0.5) continue;
+			assert(k == -1);
+			k = j;
+		}
+		assert(k >= 0);
+		uassign.push_back(k);
+	}
+
+	wassign.clear();
+	for(int p = 0; p < spectrum.size(); p++)
+	{
+		int l = lassign[p];
+		int u = uassign[p];
+		assert(l >= 0 && l < slots);
+		assert(u >= 0 && u < slots);
+		double w = rvars[l][u].get(GRB_DoubleAttr_X);
+		wassign.push_back(w);
+	}
+
+	eassign.clear();
+	for(int p = 0; p < spectrum.size(); p++)
+	{
+		double e = evars[p].get(GRB_DoubleAttr_X);
+		eassign.push_back(e);
+	}
+
+	return 0;
+}
+
 int ilpsolver::print()
 {
 	/*
@@ -275,18 +366,33 @@ int ilpsolver::print()
 	{
 		string s = it->first;
 		double m = it->second;
-		printf("amino acid %s -> %.2lf\n", s.c_str(), m);
+		printf("amino acid %s -> %.3lf\n", s.c_str(), m);
 	}
 	*/
 	assert(aa_list.size() == aa_mass.size());
 	for(int i = 0; i < aa_list.size(); i++)
 	{
-		printf("amino acid %d: %s -> %.2lf\n", i, aa_list[i].c_str(), aa_mass[i]);
+		printf("amino acid %d: %s -> %.3lf\n", i, aa_list[i].c_str(), aa_mass[i]);
 	}
 	printf("number of amino acid = %d\n", slots);
 	for(int i = 0; i < spectrum.size(); i++)
 	{
-		printf("spectrum: %.2lf\n", spectrum[i]);
+		printf("spectrum: %.3lf\n", spectrum[i]);
+	}
+	printf("upper bound = %.3lf\n", ubound);
+
+	for(int i = 0; i < xassign.size(); i++)
+	{
+		int k = xassign[i];
+		printf("slot %d is assigned amino acid %d: %s -> %.3lf\n", i, k, aa_list[k].c_str(), aa_mass[k]);
+	}
+	for(int i = 0; i < spectrum.size(); i++)
+	{
+		int l = lassign[i];
+		int u = uassign[i];
+		double w = wassign[i];
+		double e = eassign[i];
+		printf("spectrum %d with mass %.3lf is assigned to interval [%d, %d], with mass %.3lf and error %.3lf\n", i, spectrum[i], l, u, w, e);
 	}
 	return 0;
 }

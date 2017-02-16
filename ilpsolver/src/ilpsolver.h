@@ -35,6 +35,13 @@ public:
 	vector< vector<GRBVar> > rvars;		// range variables
 	vector<GRBVar> evars;				// error variables
 
+	// results
+	vector<int> xassign;
+	vector<int> lassign;
+	vector<int> uassign;
+	vector<double> wassign;
+	vector<double> eassign;
+
 public:
 	int solve();
 	int print();
@@ -43,6 +50,7 @@ private:
 	// read input files
 	int read_alphabet(const string &file);
 	int read_spectrum(const string &file);
+	int compute_upper_bound();
 
 	// add variables
 	int add_amino_acid_variables();
@@ -57,6 +65,12 @@ private:
 	int add_upper_endpoints_constraints();
 	int add_range_constraints();
 	int add_error_constraints();
+
+	// set objective
+	int set_objective();
+
+	// collect results
+	int collect_results();
 };
 
 #endif

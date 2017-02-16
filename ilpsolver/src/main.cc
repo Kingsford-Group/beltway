@@ -12,6 +12,7 @@ int main(int argc, const char ** argv)
 	}
 
 	ilpsolver sv(argv[1], argv[2]);
+	sv.solve();
 	sv.print();
 
 	return 0;
