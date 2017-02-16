@@ -1,5 +1,6 @@
 #include <iostream>
 #include "alphabet.h"
+#include "ilpsolver.h"
 
 using namespace std;
 
@@ -11,8 +12,8 @@ int main(int argc, const char ** argv)
 		return 0;
 	}
 
-	alphabet ab(argv[1]);
-	ab.print();
+	ilpsolver sv(argv[1], argv[2]);
+	sv.print();
 
 	return 0;
 }

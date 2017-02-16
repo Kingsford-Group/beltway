@@ -6,6 +6,5 @@ ilpsolver_CPPFLAGS = -I$(GUROBI_HOME)/include
 ilpsolver_LDFLAGS = -L$(GUROBI_HOME)/lib
 ilpsolver_LDADD = -lgurobi_c++ -lgurobi
 
-ilpsolver_SOURCES = ilp.h ilp.cc \
-					alphabet.h alphabet.cc \
+ilpsolver_SOURCES = ilpsolver.h ilpsolver.cc \
 					main.cc
