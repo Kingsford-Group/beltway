@@ -25,6 +25,13 @@ int ilpsolver::solve()
 	add_upper_endpoints_variables();
 	add_range_variables();
 	add_error_variables();
+
+	add_amino_acid_constraints();
+	add_lower_endpoints_constraints();
+	add_upper_endpoints_constraints();
+	add_range_constraints();
+	add_error_constraints();
+
 	return 0;
 }
 
@@ -107,7 +114,7 @@ int ilpsolver::add_lower_endpoints_variables()
 	lvars.resize(spectrum.size());
 	for(int i = 0; i < spectrum.size(); i++)
 	{
-		for(int k = 0; k < aa_list.size(); k++)
+		for(int k = 0; k < slots; k++)
 		{
 			GRBVar var = model->addVar(0, 1, 0, GRB_BINARY);
 			lvars[i].push_back(var);
@@ -158,6 +165,106 @@ int ilpsolver::add_error_variables()
 		evars.push_back(var);
 	}
 	model->update();
+	return 0;
+}
+
+int ilpsolver::add_amino_acid_constraints()
+{
+	for(int i = 0; i < slots; i++)
+	{
+		GRBLinExpr expr;
+		for(int k = 0; k < aa_list.size(); k++)
+		{
+			expr += xvars[i][k];
+		}
+		model->addConstr(expr, GRB_EQUAL, 1);
+	}
+	return 0;
+}
+
+int ilpsolver::add_lower_endpoints_constraints()
+{
+	for(int i = 0; i < spectrum.size(); i++)
+	{
+		GRBLinExpr expr;
+		for(int k = 0; k < slots; k++)
+		{
+			expr += lvars[i][k];
+		}
+		model->addConstr(expr, GRB_EQUAL, 1);
+	}
+	return 0;
+}
+
+int ilpsolver::add_upper_endpoints_constraints()
+{
+	for(int i = 0; i < spectrum.size(); i++)
+	{
+		GRBLinExpr expr;
+		for(int k = 0; k < slots; k++)
+		{
+			expr += uvars[i][k];
+		}
+		model->addConstr(expr, GRB_EQUAL, 1);
+	}
+	return 0;
+}
+
+int ilpsolver::add_range_constraints()
+{
+	for(int k = 0; k < slots; k++)
+	{
+		for(int l = 0; l < slots; l++)
+		{
+			GRBLinExpr expr;
+			if(k <= l)
+			{
+				for(int i = k; i <= l; i++)
+				{
+					for(int j = 0; j < aa_list.size(); j++)
+					{
+						expr += xvars[i][j] * aa_mass[j];
+					}
+				}
+			}
+			else
+			{
+				for(int i = k; i < slots; i++)
+				{
+					for(int j = 0; j < aa_list.size(); j++)
+					{
+						expr += xvars[i][j] * aa_mass[j];
+					}
+				}
+				for(int i = 0; i <= l; i++)
+				{
+					for(int j = 0; j < aa_list.size(); j++)
+					{
+						expr += xvars[i][j] * aa_mass[j];
+					}
+				}
+			}
+			model->addConstr(rvars[k][l], GRB_EQUAL, expr);
+		}
+	}
+	return 0;
+}
+
+int ilpsolver::add_error_constraints()
+{
+	for(int p = 0; p < spectrum.size(); p++)
+	{
+		for(int k = 0; k < slots; k++)
+		{
+			for(int l = 0; l < slots; l++)
+			{
+				GRBLinExpr expr1 = rvars[k][l] - spectrum[p] + ubound * (lvars[p][k] + uvars[p][l] - 2);
+				GRBLinExpr expr2 = spectrum[p] - rvars[k][l] + ubound * (lvars[p][k] + uvars[p][l] - 2);
+				model->addConstr(evars[p], GRB_GREATER_EQUAL, expr1);
+				model->addConstr(evars[p], GRB_GREATER_EQUAL, expr2);
+			}
+		}
+	}
 	return 0;
 }
 

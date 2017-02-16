@@ -51,6 +51,12 @@ private:
 	int add_range_variables();
 	int add_error_variables();
 
+	// add constraints
+	int add_amino_acid_constraints();
+	int add_lower_endpoints_constraints();
+	int add_upper_endpoints_constraints();
+	int add_range_constraints();
+	int add_error_constraints();
 };
 
 #endif
