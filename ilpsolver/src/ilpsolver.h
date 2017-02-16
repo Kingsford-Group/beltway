@@ -15,7 +15,7 @@ class ilpsolver
 {
 public:
 	ilpsolver(const string &alphabet_file, const string &spectrum_file);
-
+	~ilpsolver();
 
 public:
 	MSD aa2m;
@@ -30,9 +30,11 @@ public:
 
 public:
 	int solve();
+	int print();
+
+private:
 	int read_alphabet(const string &file);
 	int read_spectrum(const string &file);
-	int print();
 };
 
 #endif

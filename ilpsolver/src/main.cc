@@ -1,5 +1,4 @@
 #include <iostream>
-#include "alphabet.h"
 #include "ilpsolver.h"
 
 using namespace std;

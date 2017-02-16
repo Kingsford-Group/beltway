@@ -7,6 +7,15 @@ ilpsolver::ilpsolver(const string &alphabet_file, const string &spectrum_file)
 {
 	read_alphabet(alphabet_file);
 	read_spectrum(spectrum_file);
+
+	env = new GRBEnv();
+	model = new GRBModel(*env);
+}
+
+ilpsolver::~ilpsolver()
+{
+	if(model != NULL) delete model;
+	if(env != NULL) delete env;
 }
 
 int ilpsolver::read_alphabet(const string &file)
