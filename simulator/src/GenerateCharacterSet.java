@@ -78,7 +78,7 @@ public class GenerateCharacterSet{
 	}
     }
 
-    public static String charPrefix = "AA";
+    public static String charPrefix = "AA"; 
     
-    public static String expDir;
+    public static String expDir; //output directory
 }

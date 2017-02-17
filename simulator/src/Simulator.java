@@ -27,25 +27,51 @@ public class Simulator{
 	
 	this.loadChar2WeightHash(charsetOutFile);
 	this.loadCyclopeptide(cLen, numSim);
-
+	
 	this.generateTheoreticalSpectrum(theoSpectrumOutFile);
 	this.sampleSpectrum(numSim, sampRatio, UUID.randomUUID().toString());
     }
     
-    public Simulator(int cLen, int numSim, double sampRatio, String theoSpectrumOutFile, String charsetFile, String outDir, String cpep){
+    public Simulator(int cLen, int numSim, double sampRatio, String theoSpectrumOutFile, String charsetFile, String outDir, String cpepf){
 	this();
+	System.err.println(cpepf);
 	this.expDir = (outDir.endsWith(File.separator) ? outDir : outDir + File.separator);
 	this.clen = cLen;
 	this.prefixW = new BigDecimal[cLen+1];
 	//this.cyclopeptide = cpep;
 	this.loadChar2WeightHash(charsetFile);
-	this.loadCyclopeptide(cLen, numSim, cpep);
-	
-	this.generateTheoreticalSpectrum(theoSpectrumOutFile);
+	this.loadCyclopeptide(cLen, numSim, cpepf);
+
+	if(cpepf == null)
+	    this.generateTheoreticalSpectrum(theoSpectrumOutFile);
+	else
+	    this.loadTheoreticalSpectrum(theoSpectrumOutFile);
 	this.sampleSpectrum(numSim, sampRatio, "cycloLen" + cLen);
     }
     
+    private void loadTheoreticalSpectrum(String inF){
+	
+	BufferedReader br = null;
+	try{
+	    if(new File(inF).isFile()){
+		br = new BufferedReader(new FileReader(inF));
+		String curline = "";
+		while((curline=br.readLine())!=null){
+		    String[] tokens = curline.split("\\t");
+		    this.theoSpectrum.add(new Peptide(tokens[1].split(Simulator.delim), new BigDecimal(tokens[0]).setScale(4, RoundingMode.DOWN)));
+		}
+	    }else{
+		this.generateTheoreticalSpectrum(inF);
+	    }
+	}catch(IOException ioe){
+	    ioe.printStackTrace();
+	}
+    }
     
+    /*
+     * generates theoretical spectrum for cyclopeptide
+     *
+     */
     private void generateTheoreticalSpectrum(String outF){
 	String[] aas = this.cyclopeptide.getAAs();
 	
@@ -136,11 +162,12 @@ public class Simulator{
      *
      * @param l : lenght of cyclopeptide
      * @param n : size of chracterset
+     * @param cpef : cyclopeptide file
      * 
      */
-    private boolean loadCyclopeptide(int l, int n, String cpep){
-
-	if(cpep == null){
+    private boolean loadCyclopeptide(int l, int n, String cpepf){
+	String cpep;
+	if(cpepf == null){
 	    System.err.println("cyclo null");
 	    Random rand = new Random();
 	    int[] indices = new int[l];
@@ -161,20 +188,54 @@ public class Simulator{
 		    sb.append(Simulator.delim + chars[indices[i]]);
 		System.err.println("Setting cyclopeptide as:\t" + sb.toString());
 		cpep = sb.toString();
+		
+		BufferedWriter bw = null;
+		try{
+		    bw = new BufferedWriter(new FileWriter(expDir + "cycloLen" + l +".txt"));
+		    bw.write(cpep + "\n");
+		    bw.close();
+		}catch(IOException ioe){
+		    ioe.printStackTrace();
+		}
+
 	    }else{
 		System.err.println("cyclopeptide length [l] must be GREATER than 0");
 		return false;
 	    }
-	}
+	}else
+	    cpep = getCpepFromInputFile(cpepf);
+	
 	return this.checkCyclopeptideAndLoadPrefixWeights(l, cpep);
     }
     
+    /* grabs the first line containing the cyclopeptide sequence from a input file */
+    private String getCpepFromInputFile(String cpepf){
+	BufferedReader br = null;
+	try{
+	    br = new BufferedReader(new FileReader(cpepf));
+	    String curline = br.readLine();;
+	    if(curline == null){
+		br.close();
+		throw new Exception("cyclopeptide file [" + cpepf + "] EMPTY." );
+	    }else{
+		br.close();
+		return curline;
+	    }
+	}catch(IOException ioe){
+	    ioe.printStackTrace();
+	}catch(Exception e){
+	    e.printStackTrace();
+	}
+	return null;
+    }
+
     /*
      * @param l : length of cyclopeptide
      * @return  True if cyclopeptide sequence is a valid peptides 
      *          (length must be l and only amino acids from characterset are used. False, otherwise.
      */
     private boolean checkCyclopeptideAndLoadPrefixWeights(int l, String cpep){
+
 	String[] aas = cpep.split(Simulator.delim);
 	//check length
 	if(aas.length != l){
@@ -267,15 +328,20 @@ public class Simulator{
 	    System.err.println("Parameters:");
 	    System.err.println("\tl        [INT]  \tLength of cyclopeptide");	
 	    System.err.println("\tr        [INT]  \tNumber of simulations");
-	    System.err.println("\tf        [FLOAT]\tSampling ratio. How much of theoretical spectrum you want to sample. (0-1.0]");
-	    System.err.println("\tsf       [STR]  \tFilename to output all theoretical spectrum");
+	    System.err.println("\tf        [FLOAT]\tSampling ratio. How much of theoretical spectrum you "
+			       +"\t                \twant to sample. (0-1.0]");
+	    System.err.println("\tsf       [STR]  \tFilename for theoretical spectrum. If <cpepf> is given," 
+			       +"\t                \tthis is an input file containing theoretical spectrum."
+			       +"\t                \tIf <cpepf> is given and <sf> is NOT found, it will overwrite.");
 	    System.err.println("\tchrf     [STR]  \tCharacterset file");
 	    System.err.println("\toDir     [STR]  \tOutput directory (ex: data/int_simul1)");
-	    System.err.println("\tcpep     [STR]  \t'-' delimited cyclopeptide of length l (ex: AA15-AA3-AA5-AA8-AA18-AA13");
+	    System.err.println("\tcpepf    [STR]  \tFile containing a single line : '-' delimited cyclopeptide"
+			       +"\t                \tof length l (ex: AA15-AA3-AA5-AA8-AA18-AA13");
 	    System.err.println("\tn        [INT]  \tSize of character set");
 	    System.err.println("\tminW     [FLOAT]\tMinimum weight allowed");
 	    System.err.println("\tmaxW     [FLOAT]\tMaximum weight allowed");
-	    System.err.println("\tcf       [STR]  \tFilename to output a generated set of characters and their associated weights");
+	    System.err.println("\tcf       [STR]  \tFilename to output a generated set of characters and their" 
+			       +"\t                \tassociated weights");
 	    System.err.println("\tInt?     [YyNn] \t Force weights to be integers. [default:N]");
 	}
 		

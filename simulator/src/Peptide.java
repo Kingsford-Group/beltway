@@ -43,7 +43,7 @@ public class Peptide implements Comparable<Peptide>{
 	return weight;
     }
 
-    private String[] aas;
-    private BigDecimal weight;
+    private String[] aas;//ordered array of amino acids
+    private BigDecimal weight;//weight of peptide
     
 }
