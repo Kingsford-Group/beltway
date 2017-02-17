@@ -6,9 +6,9 @@ using namespace std;
 
 int main(int argc, const char ** argv)
 {
-	if(argc != 4)
+	if(argc == 1)
 	{
-		cout << "usage: " << argv[0] << " <alphabet-file> <weights-file> <output-file>" << endl;
+		cout << "usage: " << argv[0] << " <alphabet-file> <weights-file> <output-file> [-t ilp-time-limit]" << endl;
 		return 0;
 	}
 
