@@ -45,6 +45,7 @@ public:
 public:
 	int solve();
 	int print();
+	int write(const string &file);
 
 private:
 	// read input files
