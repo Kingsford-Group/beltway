@@ -1,0 +1,42 @@
+<project name="Simulator" basedir=".">
+  
+  <property environment="env"/>
+  <property name="dir.src">src</property>
+  <property name="dir.build">build</property>
+  <property name="dir.build.classes">${dir.build}/classes</property>
+  <property name="simulator.jar">${dir.build}/Simulator.jar</property>
+  <property name="GenerateCharacterSet.jar">${dir.build}/GenerateCharacterSet.jar</property>
+  
+  <target name="clean">
+    <delete dir="${dir.build}"/>
+  </target>
+  
+  
+  <target name="init">
+    <mkdir dir="${dir.build}"/>
+    <mkdir dir="${dir.build.classes}"/>
+  </target>
+  
+  
+  <target name="compile" depends="init">
+    <echo>Compiling Java source</echo>
+    
+    <javac srcdir="${dir.src}"
+           destdir="${dir.build.classes}" />
+  </target>
+  
+  <target name="jar" depends="compile">
+    <echo>Making JAR file</echo>
+    <jar jarfile="${simulator.jar}" basedir="${dir.build.classes}">
+      <manifest>
+        <attribute name="Main-Class" value="Simulator"/>
+      </manifest>
+    </jar>
+    <jar jarfile="${GenerateCharacterSet.jar}" basedir="${dir.build.classes}">
+      <manifest>
+        <attribute name="Main-Class" value="GenerateCharacterSet"/>
+      </manifest>
+    </jar>
+  </target>
+
+</project>
