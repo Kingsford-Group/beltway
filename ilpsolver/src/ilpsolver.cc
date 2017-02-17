@@ -1,4 +1,5 @@
 #include "ilpsolver.h"
+#include "config.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -35,6 +36,8 @@ int ilpsolver::solve()
 
 	set_objective();
 
+	model->getEnv().set(GRB_DoubleParam_TimeLimit, ilp_time_limit);
+
 	model->update();
 	model->optimize();
 
@@ -66,6 +69,8 @@ int ilpsolver::read_alphabet(const string &file)
 		else aa2m[s] = w;
 		*/
 	}
+
+	fin.close();
 	return 0;
 }
 
@@ -79,11 +84,12 @@ int ilpsolver::read_spectrum(const string &file)
 	}
 
 	string line;
+	char buf[10240];
 	while(getline(fin, line))
 	{
 		if(line == "") continue;
 		stringstream sstr(line);
-		sstr >> slots;
+		sstr >> buf >> buf >> slots;
 		break;
 	}
 
@@ -96,6 +102,8 @@ int ilpsolver::read_spectrum(const string &file)
 		sstr >> m;
 		spectrum.push_back(m);
 	}
+
+	fin.close();
 	return 0;
 }
 
@@ -394,5 +402,20 @@ int ilpsolver::print()
 		double e = eassign[i];
 		printf("spectrum %d with mass %.3lf is assigned to interval [%d, %d], with mass %.3lf and error %.3lf\n", i, spectrum[i], l, u, w, e);
 	}
+	return 0;
+}
+
+int ilpsolver::write(const string &file)
+{
+	ofstream fout(file.c_str());
+	if(fout.fail()) return 0;
+
+	for(int i = 0; i < xassign.size(); i++)
+	{
+		int k = xassign[i];
+		fout << aa_list[k].c_str() << endl;
+	}
+
+	fout.close();
 	return 0;
 }
