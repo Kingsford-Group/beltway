@@ -4,9 +4,8 @@
 #include <fstream>
 #include <sstream>
 
-ilpsolver::ilpsolver(const string &alphabet_file, const string &spectrum_file)
+ilpsolver::ilpsolver(const string &spectrum_file)
 {
-	read_alphabet(alphabet_file);
 	read_spectrum(spectrum_file);
 	compute_upper_bound();
 
@@ -24,13 +23,12 @@ int ilpsolver::solve()
 {
 	try
 	{
-		add_amino_acid_variables();
+		add_distance_variables();
 		add_lower_endpoints_variables();
 		add_upper_endpoints_variables();
 		add_range_variables();
 		add_error_variables();
 
-		add_amino_acid_constraints();
 		add_lower_endpoints_constraints();
 		add_upper_endpoints_constraints();
 		add_range_constraints();
@@ -41,43 +39,15 @@ int ilpsolver::solve()
 		model->getEnv().set(GRB_DoubleParam_TimeLimit, ilp_time_limit);
 
 		model->update();
+
 		model->optimize();
 
 		collect_results();
 	}
 	catch(GRBException &e)
 	{
-		printf("%s\n", e.getMessage().c_str());
+		printf("Gurobi Exception: %s\n", e.getMessage().c_str());
 	}
-	return 0;
-}
-
-int ilpsolver::read_alphabet(const string &file)
-{
-	ifstream fin(file.c_str());
-	if(fin.fail()) 
-	{
-		cout << "open " << file.c_str() << " error" << endl;
-		return 0;
-	}
-
-	string line;
-	char a[1024];
-	double w;
-	while(getline(fin, line))
-	{
-		stringstream sstr(line);
-		sstr >> a >> w;
-		aa_list.push_back(a);
-		aa_mass.push_back(w);
-		/*
-		string s(a);
-		if(aa2m.find(s) == aa2m.end()) aa2m.insert(PSD(s, w));
-		else aa2m[s] = w;
-		*/
-	}
-
-	fin.close();
 	return 0;
 }
 
@@ -125,17 +95,13 @@ int ilpsolver::compute_upper_bound()
 	return 0;
 }
 
-int ilpsolver::add_amino_acid_variables()
+int ilpsolver::add_distance_variables()
 {
-	xvars.clear();
-	xvars.resize(slots);
+	yvars.clear();
 	for(int i = 0; i < slots; i++)
 	{
-		for(int k = 0; k < aa_list.size(); k++)
-		{
-			GRBVar var = model->addVar(0, 1, 0, GRB_BINARY);
-			xvars[i].push_back(var);
-		}
+		GRBVar var = model->addVar(0, ubound, 0, GRB_CONTINUOUS);
+		yvars.push_back(var);
 	}
 	model->update();
 	return 0;
@@ -201,20 +167,6 @@ int ilpsolver::add_error_variables()
 	return 0;
 }
 
-int ilpsolver::add_amino_acid_constraints()
-{
-	for(int i = 0; i < slots; i++)
-	{
-		GRBLinExpr expr;
-		for(int k = 0; k < aa_list.size(); k++)
-		{
-			expr += xvars[i][k];
-		}
-		model->addConstr(expr, GRB_EQUAL, 1);
-	}
-	return 0;
-}
-
 int ilpsolver::add_lower_endpoints_constraints()
 {
 	for(int i = 0; i < spectrum.size(); i++)
@@ -245,39 +197,37 @@ int ilpsolver::add_upper_endpoints_constraints()
 
 int ilpsolver::add_range_constraints()
 {
+
 	for(int k = 0; k < slots; k++)
 	{
 		for(int l = 0; l < slots; l++)
 		{
-			GRBLinExpr expr;
-			if(k <= l)
-			{
-				for(int i = k; i <= l; i++)
+			try{
+				GRBLinExpr expr;
+				if(k <= l)
 				{
-					for(int j = 0; j < aa_list.size(); j++)
+					for(int i = k; i <= l; i++)
 					{
-						expr += xvars[i][j] * aa_mass[j];
+						expr += yvars[i] * 1;
 					}
 				}
+				else
+				{
+					for(int i = k; i < slots; i++)
+					{
+						expr += yvars[i] * 1;
+					}
+					for(int i = 0; i <= l; i++)
+						{
+						expr += yvars[i] * 1;
+					}
+				}
+				model->addConstr(rvars[k][l], GRB_EQUAL, expr);
 			}
-			else
-			{
-				for(int i = k; i < slots; i++)
-				{
-					for(int j = 0; j < aa_list.size(); j++)
-					{
-						expr += xvars[i][j] * aa_mass[j];
-					}
-				}
-				for(int i = 0; i <= l; i++)
-				{
-					for(int j = 0; j < aa_list.size(); j++)
-					{
-						expr += xvars[i][j] * aa_mass[j];
-					}
-				}
-			}
-			model->addConstr(rvars[k][l], GRB_EQUAL, expr);
+			catch(GRBException &e)
+        		{
+                		printf("Gurobi Exception adding range (%d,%d): %s\n", k,l,e.getMessage().c_str());
+        		}
 		}
 	}
 	return 0;
@@ -311,18 +261,11 @@ int ilpsolver::set_objective()
 
 int ilpsolver::collect_results()
 {
-	xassign.clear();
+	yassign.clear();
 	for(int i = 0; i < slots; i++)
 	{
-		int k = -1;
-		for(int j = 0; j < aa_list.size(); j++)
-		{
-			if(xvars[i][j].get(GRB_DoubleAttr_X) <= 0.5) continue;
-			assert(k == -1);
-			k = j;
-		}
-		assert(k >= 0);
-		xassign.push_back(k);
+		double y = yvars[i].get(GRB_DoubleAttr_X);
+                yassign.push_back(y);
 	}
 
 	lassign.clear();
@@ -384,11 +327,6 @@ int ilpsolver::print()
 		printf("amino acid %s -> %.3lf\n", s.c_str(), m);
 	}
 	*/
-	assert(aa_list.size() == aa_mass.size());
-	for(int i = 0; i < aa_list.size(); i++)
-	{
-		printf("amino acid %d: %s -> %.3lf\n", i, aa_list[i].c_str(), aa_mass[i]);
-	}
 	printf("number of amino acid = %d\n", slots);
 	for(int i = 0; i < spectrum.size(); i++)
 	{
@@ -396,10 +334,10 @@ int ilpsolver::print()
 	}
 	printf("upper bound = %.3lf\n", ubound);
 
-	for(int i = 0; i < xassign.size(); i++)
+	for(int i = 0; i < yassign.size(); i++)
 	{
-		int k = xassign[i];
-		printf("slot %d is assigned amino acid %d: %s -> %.3lf\n", i, k, aa_list[k].c_str(), aa_mass[k]);
+		int k = yassign[i];
+		printf("slot %d is assigned a weight of %d\n", i, k);
 	}
 	for(int i = 0; i < spectrum.size(); i++)
 	{
@@ -417,10 +355,10 @@ int ilpsolver::write(const string &file)
 	ofstream fout(file.c_str());
 	if(fout.fail()) return 0;
 
-	for(int i = 0; i < xassign.size(); i++)
+	for(int i = 0; i < yassign.size(); i++)
 	{
-		int k = xassign[i];
-		fout << aa_list[k].c_str() << endl;
+		int y = yassign[i];
+		fout << y << endl;
 	}
 
 	fout.close();
