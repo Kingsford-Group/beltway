@@ -58,6 +58,7 @@ private:
 	int add_error_variables();
 
 	// add constraints
+	int add_distance_constraints();
 	int add_lower_endpoints_constraints();
 	int add_upper_endpoints_constraints();
 	int add_range_constraints();

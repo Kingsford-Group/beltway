@@ -3,12 +3,12 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <stdlib.h>
 
 ilpsolver::ilpsolver(const string &spectrum_file)
 {
 	read_spectrum(spectrum_file);
 	compute_upper_bound();
-
 	env = new GRBEnv();
 	model = new GRBModel(*env);
 }
@@ -29,6 +29,7 @@ int ilpsolver::solve()
 		add_range_variables();
 		add_error_variables();
 
+		//add_distance_constraints();
 		add_lower_endpoints_constraints();
 		add_upper_endpoints_constraints();
 		add_range_constraints();
@@ -147,6 +148,7 @@ int ilpsolver::add_range_variables()
 	{
 		for(int k = 0; k < slots; k++)
 		{
+			//GRBVar var = model->addVar(0, (ubound * (abs(k - i) + 1)), 0, GRB_CONTINUOUS);
 			GRBVar var = model->addVar(0, ubound, 0, GRB_CONTINUOUS);
 			rvars[i].push_back(var);
 		}
@@ -160,10 +162,21 @@ int ilpsolver::add_error_variables()
 	evars.clear();
 	for(int i = 0; i < spectrum.size(); i++)
 	{
+		//GRBVar var = model->addVar(0, (ubound * slots), 1, GRB_CONTINUOUS);
 		GRBVar var = model->addVar(0, ubound, 1, GRB_CONTINUOUS);
 		evars.push_back(var);
 	}
 	model->update();
+	return 0;
+}
+
+int ilpsolver::add_distance_constraints(){
+	
+	for(int k = 1; k < slots; k++)
+	{
+		 model->addConstr(yvars[k], GRB_GREATER_EQUAL, yvars[0]);
+	}
+
 	return 0;
 }
 
@@ -241,8 +254,10 @@ int ilpsolver::add_error_constraints()
 		{
 			for(int l = 0; l < slots; l++)
 			{
-				GRBLinExpr expr1 = rvars[k][l] - spectrum[p] + ubound * (lvars[p][k] + uvars[p][l] - 2);
-				GRBLinExpr expr2 = spectrum[p] - rvars[k][l] + ubound * (lvars[p][k] + uvars[p][l] - 2);
+				//GRBLinExpr expr1 = rvars[k][l] - spectrum[p] + (ubound * (abs(k - l) + 1)) * (lvars[p][k] + uvars[p][l] - 2);
+				GRBLinExpr expr1 = rvars[k][l] - spectrum[p] + (ubound * (lvars[p][k] + uvars[p][l] - 2));
+				//GRBLinExpr expr2 = spectrum[p] - rvars[k][l] + (ubound * (abs(k - l) + 1)) * (lvars[p][k] + uvars[p][l] - 2);
+				GRBLinExpr expr2 = spectrum[p] - rvars[k][l] + (ubound * (lvars[p][k] + uvars[p][l] - 2));
 				model->addConstr(evars[p], GRB_GREATER_EQUAL, expr1);
 				model->addConstr(evars[p], GRB_GREATER_EQUAL, expr2);
 			}
