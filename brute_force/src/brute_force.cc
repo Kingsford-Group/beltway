@@ -27,7 +27,7 @@ int brute_force::solve()
 		lassign_test.clear();
 		lassign_test.resize(spectrum.size());
 		do{
-	                printf("\rCurrent best objective: %lf", current_best);
+	                printf("Current best objective: %lf\n", current_best);
 			uassign_test.clear();
         	        uassign_test.resize(spectrum.size());
 	                do{
