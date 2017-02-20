@@ -22,26 +22,33 @@ ilpsolver::~ilpsolver()
 
 int ilpsolver::solve()
 {
-	add_amino_acid_variables();
-	add_lower_endpoints_variables();
-	add_upper_endpoints_variables();
-	add_range_variables();
-	add_error_variables();
+	try
+	{
+		add_amino_acid_variables();
+		add_lower_endpoints_variables();
+		add_upper_endpoints_variables();
+		add_range_variables();
+		add_error_variables();
 
-	add_amino_acid_constraints();
-	add_lower_endpoints_constraints();
-	add_upper_endpoints_constraints();
-	add_range_constraints();
-	add_error_constraints();
+		add_amino_acid_constraints();
+		add_lower_endpoints_constraints();
+		add_upper_endpoints_constraints();
+		add_range_constraints();
+		add_error_constraints();
 
-	set_objective();
+		set_objective();
 
-	model->getEnv().set(GRB_DoubleParam_TimeLimit, ilp_time_limit);
+		model->getEnv().set(GRB_DoubleParam_TimeLimit, ilp_time_limit);
 
-	model->update();
-	model->optimize();
+		model->update();
+		model->optimize();
 
-	collect_results();
+		collect_results();
+	}
+	catch(GRBException &e)
+	{
+		printf("%s\n", e.getMessage().c_str());
+	}
 	return 0;
 }
 

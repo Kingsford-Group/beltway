@@ -14,10 +14,17 @@ int main(int argc, const char ** argv)
 
 	parse_arguments(argc, argv);
 
-	ilpsolver sv(argv[1], argv[2]);
-	sv.solve();
-	sv.write(argv[3]);
-	sv.print();
+	try
+	{
+		ilpsolver sv(argv[1], argv[2]);
+		sv.solve();
+		sv.write(argv[3]);
+		sv.print();
+	}
+	catch(GRBException &e)
+	{
+		printf("%s\n", e.getMessage().c_str());
+	}
 
 	return 0;
 }

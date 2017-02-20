@@ -12,8 +12,8 @@ AC_PROG_CXX
 AC_PROG_CC
 
 # Checks for libraries.
-AS_IF([test "s$GUROBI_HOME" = "s"], [AC_MSG_ERROR([*** Please set environment variable GUROBI_HOME ***])]) 
-AS_IF([test "s$GRB_LICENSE_FILE" = "s"], [AC_MSG_ERROR([*** Please set environment variable GRB_LICENSE_FILE ***])]) 
+#AS_IF([test "s$GUROBI_HOME" = "s"], [AC_MSG_ERROR([*** Please set environment variable GUROBI_HOME ***])]) 
+#AS_IF([test "s$GRB_LICENSE_FILE" = "s"], [AC_MSG_ERROR([*** Please set environment variable GRB_LICENSE_FILE ***])]) 
 
 # Checks for header files.
 
