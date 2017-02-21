@@ -68,6 +68,9 @@ private:
 	int add_range_constraints();
 	int add_error_constraints();
 
+	// cutting planes (extra constraints)
+	int add_ordering_cutting_planes();
+
 	// set objective
 	int set_objective();
 

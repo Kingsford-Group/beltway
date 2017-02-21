@@ -304,6 +304,47 @@ int ilpsolver::add_error_constraints()
 	return 0;
 }
 
+int ilpsolver::add_ordering_cutting_planes()
+{
+	for(int p1 = 0; p1 < spectrum.size(); p1++)
+	{
+		for(int p2 = p1 + 1; p2 < spectrum.size(); p2++)
+		{
+			for(int k1 = 0; k1 < slots; k1++)
+			{
+				for(int l1 = 0; l1 < slots; l1++)
+				{
+					for(int k2 = 0; k2 < slots; k2++)
+					{
+						for(int l2 = 0; l2 < slots; l2++)
+						{
+							if(spectrum[p1] > spectrum[p2])
+							{
+								double bound = 0;
+								if(k2 <= l2) bound = (l2 - k2 + 1) * max_weight;
+								else bound = (l2 + 1 + slots - k2) * max_weight;
+								GRBLinExpr expr1 = rvars[k1][l1] - rvars[k2][l2];
+								GRBLinExpr expr2 = (lvars[p1][k1] + uvars[p1][l1] + lvars[p2][k2] + uvars[p2][l2] - 4) * bound;
+								model->addConstr(expr1, GRB_GREATER_EQUAL, expr2);
+							}
+							else if(spectrum[p2] > spectrum[p1])
+							{
+								double bound = 0;
+								if(k1 <= l1) bound = (l1 - k1 + 1) * max_weight;
+								else bound = (l1 + 1 + slots - k1) * max_weight;
+								GRBLinExpr expr1 = rvars[k2][l2] - rvars[k1][l1];
+								GRBLinExpr expr2 = (lvars[p1][k1] + uvars[p1][l1] + lvars[p2][k2] + uvars[p2][l2] - 4) * bound;
+								model->addConstr(expr1, GRB_GREATER_EQUAL, expr2);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return 0;
+}
+
 int ilpsolver::set_objective()
 {
 	GRBLinExpr expr;
