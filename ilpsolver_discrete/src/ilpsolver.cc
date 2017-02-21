@@ -116,12 +116,12 @@ int ilpsolver::read_spectrum(const string &file)
 
 int ilpsolver::compute_upper_bound()
 {
-	ubound = 0;
+	max_weight = 0;
 	for(int i = 0; i < spectrum.size(); i++)
 	{
-		if(spectrum[i] > ubound) ubound = spectrum[i];
+		if(spectrum[i] > max_weight) max_weight = spectrum[i];
 	}
-	ubound = ubound * slots;
+	ubound = max_weight * slots;
 	return 0;
 }
 
@@ -291,8 +291,11 @@ int ilpsolver::add_error_constraints()
 		{
 			for(int l = 0; l < slots; l++)
 			{
-				GRBLinExpr expr1 = rvars[k][l] - spectrum[p] + ubound * (lvars[p][k] + uvars[p][l] - 2);
-				GRBLinExpr expr2 = spectrum[p] - rvars[k][l] + ubound * (lvars[p][k] + uvars[p][l] - 2);
+				double bound = 0;
+				if(k <= l) bound = (l - k + 1) * max_weight;
+				else bound = (l + 1 + slots - k) * max_weight;
+				GRBLinExpr expr1 = rvars[k][l] - spectrum[p] + bound * (lvars[p][k] + uvars[p][l] - 2);
+				GRBLinExpr expr2 = spectrum[p] - rvars[k][l] + bound * (lvars[p][k] + uvars[p][l] - 2);
 				model->addConstr(evars[p], GRB_GREATER_EQUAL, expr1);
 				model->addConstr(evars[p], GRB_GREATER_EQUAL, expr2);
 			}
@@ -394,7 +397,7 @@ int ilpsolver::print()
 	{
 		printf("spectrum: %.3lf\n", spectrum[i]);
 	}
-	printf("upper bound = %.3lf\n", ubound);
+	printf("max weight = %.3lf, upper bound = %.3lf\n", max_weight, ubound);
 
 	for(int i = 0; i < xassign.size(); i++)
 	{
