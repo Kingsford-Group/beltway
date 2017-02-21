@@ -27,20 +27,38 @@ int ilpsolver::solve()
 		add_amino_acid_variables();
 		add_lower_endpoints_variables();
 		add_upper_endpoints_variables();
-		add_range_variables();
-		add_error_variables();
+		if(no_infinity_contraints){
+			add_set_map_variables();
+			add_set_acid_map_variables();		
+		}else{
+			add_range_variables();
+		}
 
+		add_error_variables();
+		
 		add_amino_acid_constraints();
 		add_lower_endpoints_constraints();
 		add_upper_endpoints_constraints();
-		add_range_constraints();
+		if(no_infinity_contraints){
+			add_set_map_lbound_constraints();
+			add_set_map_ubound_constraints();
+			add_set_map_constraints();
+			add_set_acid_map_constraints();
+			add_set_location_map_ubound_constraints();
+			add_set_location_map_lbound_constraints();
+		}else{
+			add_range_constraints();
+		}
 		add_error_constraints();
-
+		
 		set_objective();
 
 		model->getEnv().set(GRB_DoubleParam_TimeLimit, ilp_time_limit);
 
 		model->update();
+
+		model->write("temp.lp");
+
 		model->optimize();
 
 		collect_results();
@@ -173,6 +191,35 @@ int ilpsolver::add_upper_endpoints_variables()
 	return 0;
 }
 
+int ilpsolver::add_set_map_variables(){
+	ovars.clear();
+	ovars.resize(slots);
+	for(int i=0; i<slots; i++){
+		for(int p=0; p<spectrum.size();p++){
+			GRBVar var = model->addVar(0,1,0,GRB_BINARY);
+			ovars[i].push_back(var);
+		}
+	}
+	model->update();
+	return 0;
+}
+
+int ilpsolver::add_set_acid_map_variables(){
+	svars.clear();
+	svars.resize(slots);
+	for(int i=0;i<slots;i++){
+		svars[i].clear();
+		svars[i].resize(aa_list.size());
+		for(int j=0;j<aa_list.size();j++){
+			for(int p=0;p<spectrum.size();p++){
+				GRBVar var = model->addVar(0,1,0,GRB_BINARY);
+				svars[i][j].push_back(var);
+			}
+		}
+	}
+	return 0;
+}
+
 int ilpsolver::add_range_variables()
 {
 	rvars.clear();
@@ -243,6 +290,102 @@ int ilpsolver::add_upper_endpoints_constraints()
 	return 0;
 }
 
+int ilpsolver::add_set_map_lbound_constraints(){
+	for(int k=0;k<slots;k++){
+		for(int l=0;l<slots;l++){
+			for(int p=0;p<spectrum.size();p++){
+				GRBLinExpr expr = lvars[p][k] + uvars[p][l] - 1;
+				if(k<=l){
+					for(int i=k;i<=l;i++){
+						model->addConstr(ovars[i][p], GRB_GREATER_EQUAL, expr);
+					}
+				}else{
+					for(int i=k;i<slots;i++){
+						model->addConstr(ovars[i][p], GRB_GREATER_EQUAL, expr);
+					}
+					for(int i=0;i<=l;i++){
+						model->addConstr(ovars[i][p], GRB_GREATER_EQUAL, expr);
+					}
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+int ilpsolver::add_set_map_ubound_constraints(){
+        for(int k=0;k<slots;k++){
+                for(int l=0;l<slots;l++){
+                        for(int p=0;p<spectrum.size();p++){
+                                GRBLinExpr expr = 2 - lvars[p][k] - uvars[p][l];
+                                if((l+1)%slots!=k){
+					if(l<k){
+                                	        for(int i=l+1;i<k;i++){
+                        	                        model->addConstr(ovars[i][p], GRB_LESS_EQUAL, expr);
+                	                        }
+        	                        }else{
+	                                        for(int i=l+1;i<slots;i++){
+                                        	        model->addConstr(ovars[i][p], GRB_LESS_EQUAL, expr);
+                                	        }
+                        	                for(int i=0;i<k;i++){
+                	                                model->addConstr(ovars[i][p], GRB_LESS_EQUAL, expr);
+        	                                }
+	                                }
+				}
+                        }
+                }
+        }
+        return 0;
+}
+
+int ilpsolver::add_set_acid_map_constraints(){
+	for(int i=0;i<slots;i++){
+		for(int j=0;j<aa_list.size();j++){
+			for(int p=0;p<spectrum.size();p++){
+				model->addConstr(svars[i][j][p], GRB_LESS_EQUAL, xvars[i][j]);
+			}
+		}
+	}
+	return 0;
+}
+
+int ilpsolver::add_set_location_map_ubound_constraints(){
+        for(int i=0;i<slots;i++){
+                for(int j=0;j<aa_list.size();j++){
+                        for(int p=0;p<spectrum.size();p++){
+                                model->addConstr(svars[i][j][p], GRB_LESS_EQUAL, ovars[i][p]);
+                        }
+                }
+        }
+        return 0;
+}
+
+int ilpsolver::add_set_location_map_lbound_constraints(){
+        for(int i=0;i<slots;i++){
+        	for(int p=0;p<spectrum.size();p++){
+			GRBLinExpr expr;
+			for(int j=0;j<aa_list.size();j++){
+				expr += svars[i][j][p];
+                        }
+			model->addConstr(expr, GRB_GREATER_EQUAL, ovars[i][p]);
+                }
+        }
+        return 0;
+}
+
+int ilpsolver::add_set_map_constraints(){
+	for(int p=0;p<spectrum.size();p++){
+		GRBLinExpr expr;
+		for(int i=0;i<slots;i++){
+			for(int j=0;j<aa_list.size();j++){
+				expr += svars[i][j][p];
+			}
+		}
+		model->addConstr(expr, GRB_GREATER_EQUAL, 1);
+	}
+	return 0;
+}
+
 int ilpsolver::add_range_constraints()
 {
 	for(int k = 0; k < slots; k++)
@@ -285,16 +428,32 @@ int ilpsolver::add_range_constraints()
 
 int ilpsolver::add_error_constraints()
 {
-	for(int p = 0; p < spectrum.size(); p++)
-	{
-		for(int k = 0; k < slots; k++)
+	if(no_infinity_contraints){
+		for(int p=0;p<spectrum.size();p++){
+			GRBLinExpr expr1 = spectrum[p];
+                        GRBLinExpr expr2;
+			for(int i=0;i<slots;i++){
+				for(int j=0;j<aa_list.size();j++){
+					expr1 -= svars[i][j][p] * aa_mass[j];
+					expr2 += svars[i][j][p] * aa_mass[j];
+				}
+			}
+                	expr2 -= spectrum[p];
+			model->addConstr(evars[p], GRB_GREATER_EQUAL, expr1);
+                        model->addConstr(evars[p], GRB_GREATER_EQUAL, expr2);
+		}
+	}else{
+		for(int p = 0; p < spectrum.size(); p++)
 		{
-			for(int l = 0; l < slots; l++)
+			for(int k = 0; k < slots; k++)
 			{
-				GRBLinExpr expr1 = rvars[k][l] - spectrum[p] + ubound * (lvars[p][k] + uvars[p][l] - 2);
-				GRBLinExpr expr2 = spectrum[p] - rvars[k][l] + ubound * (lvars[p][k] + uvars[p][l] - 2);
-				model->addConstr(evars[p], GRB_GREATER_EQUAL, expr1);
-				model->addConstr(evars[p], GRB_GREATER_EQUAL, expr2);
+				for(int l = 0; l < slots; l++)
+				{
+					GRBLinExpr expr1 = rvars[k][l] - spectrum[p] + ubound * (lvars[p][k] + uvars[p][l] - 2);
+					GRBLinExpr expr2 = spectrum[p] - rvars[k][l] + ubound * (lvars[p][k] + uvars[p][l] - 2);
+					model->addConstr(evars[p], GRB_GREATER_EQUAL, expr1);
+					model->addConstr(evars[p], GRB_GREATER_EQUAL, expr2);
+				}
 			}
 		}
 	}
@@ -325,6 +484,22 @@ int ilpsolver::collect_results()
 		xassign.push_back(k);
 	}
 
+	if(no_infinity_contraints){
+		sjassign.clear();
+		sjassign.resize(spectrum.size());
+		siassign.clear();
+		siassign.resize(spectrum.size());
+		for(int p = 0; p < spectrum.size(); p++){
+			for(int j = 0; j < aa_list.size(); j++){
+				for(int i = 0; i < slots; i++){
+					if(svars[i][j][p].get(GRB_DoubleAttr_X) <= 0.5) continue;
+					sjassign[p].push_back(j);
+					siassign[p].push_back(i);
+				}
+			}
+		}
+	}
+
 	lassign.clear();
 	for(int p = 0; p < spectrum.size(); p++)
 	{
@@ -353,15 +528,17 @@ int ilpsolver::collect_results()
 		uassign.push_back(k);
 	}
 
-	wassign.clear();
-	for(int p = 0; p < spectrum.size(); p++)
-	{
-		int l = lassign[p];
-		int u = uassign[p];
-		assert(l >= 0 && l < slots);
-		assert(u >= 0 && u < slots);
-		double w = rvars[l][u].get(GRB_DoubleAttr_X);
-		wassign.push_back(w);
+	if(!no_infinity_contraints){
+		wassign.clear();
+		for(int p = 0; p < spectrum.size(); p++)
+		{
+			int l = lassign[p];
+			int u = uassign[p];
+			assert(l >= 0 && l < slots);
+			assert(u >= 0 && u < slots);
+			double w = rvars[l][u].get(GRB_DoubleAttr_X);
+			wassign.push_back(w);
+		}
 	}
 
 	eassign.clear();
@@ -405,9 +582,39 @@ int ilpsolver::print()
 	{
 		int l = lassign[i];
 		int u = uassign[i];
-		double w = wassign[i];
+		double w = 0;
+		if(no_infinity_contraints){
+			if(l<=u){
+				for(int i=l;i<=u;i++) w += aa_mass[xassign[i]];
+			}else{
+				for(int i=l;i<slots;i++) w += aa_mass[xassign[i]];
+				for(int i=0;i<=u;i++) w += aa_mass[xassign[i]];
+			}
+		}else w = wassign[i];
 		double e = eassign[i];
-		printf("spectrum %d with mass %.3lf is assigned to interval [%d, %d], with mass %.3lf and error %.3lf\n", i, spectrum[i], l, u, w, e);
+		printf("spectrum %d with mass %.3lf is assigned to interval [%d, %d], with mass %.3lf and error %.3lf (actual %.3lf)\n", i, spectrum[i], l, u, w, e, (w-spectrum[i]));
+		
+		if(false && no_infinity_contraints){
+			printf("\t");
+			double sum = 0;
+			for(int c = 0; c<sjassign[i].size(); c++){
+				int j = sjassign[i][c];
+				if(c!=0) printf(",");
+				printf("%d (%s)",j, aa_list[j].c_str());
+				sum += aa_mass[j];
+			}
+			printf(" = %.3lf\n",sum);
+
+			sum = 0;
+			printf("\t");
+                        for(int c = 0; c<siassign[i].size(); c++){
+                                int j = siassign[i][c];
+                                if(c!=0) printf(",");
+                                printf("%d (%s)",j, aa_list[xassign[j]].c_str());
+                                sum += aa_mass[xassign[j]];
+                        }
+                        printf(" = %.3lf\n",sum);
+		}
 	}
 	return 0;
 }
