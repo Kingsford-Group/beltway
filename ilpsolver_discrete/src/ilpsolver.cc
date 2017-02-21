@@ -447,13 +447,16 @@ int ilpsolver::add_error_constraints()
 		{
 			for(int k = 0; k < slots; k++)
 			{
-				double bound = 0;
-				if(k <= l) bound = (l - k + 1) * max_weight;
-				else bound = (l + 1 + slots - k) * max_weight;
-				GRBLinExpr expr1 = rvars[k][l] - spectrum[p] + bound * (lvars[p][k] + uvars[p][l] - 2);
-				GRBLinExpr expr2 = spectrum[p] - rvars[k][l] + bound * (lvars[p][k] + uvars[p][l] - 2);
-				model->addConstr(evars[p], GRB_GREATER_EQUAL, expr1);
-				model->addConstr(evars[p], GRB_GREATER_EQUAL, expr2);
+				for(int l = 0; l < slots; l++)
+                        	{
+					double bound = 0;
+					if(k <= l) bound = (l - k + 1) * max_weight;
+					else bound = (l + 1 + slots - k) * max_weight;
+					GRBLinExpr expr1 = rvars[k][l] - spectrum[p] + bound * (lvars[p][k] + uvars[p][l] - 2);
+					GRBLinExpr expr2 = spectrum[p] - rvars[k][l] + bound * (lvars[p][k] + uvars[p][l] - 2);
+					model->addConstr(evars[p], GRB_GREATER_EQUAL, expr1);
+					model->addConstr(evars[p], GRB_GREATER_EQUAL, expr2);
+				}
 			}
 		}
 	}
