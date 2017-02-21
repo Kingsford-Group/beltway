@@ -29,7 +29,7 @@ int ilpsolver::solve()
 		add_range_variables();
 		add_error_variables();
 
-		//add_distance_constraints();
+		add_distance_constraints();
 		add_lower_endpoints_constraints();
 		add_upper_endpoints_constraints();
 		add_range_constraints();
