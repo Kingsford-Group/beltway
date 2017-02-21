@@ -21,6 +21,7 @@ public:
 	// instance
 	int slots;
 	double ubound;
+	double max_weight;
 	vector<double> spectrum;
 	vector<string> aa_list;
 	vector<double> aa_mass;
