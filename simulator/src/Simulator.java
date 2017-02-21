@@ -29,7 +29,7 @@ public class Simulator{
 	this.loadCyclopeptide(cLen, numSim);
 	
 	this.generateTheoreticalSpectrum(theoSpectrumOutFile);
-	this.sampleSpectrum(numSim, sampRatio, UUID.randomUUID().toString());
+	this.sampleSpectrum(numSim, sampRatio, "cycoLen" + cLen);
     }
     
     public Simulator(int cLen, int numSim, double sampRatio, String theoSpectrumOutFile, String charsetFile, String outDir, String cpepf){
@@ -265,24 +265,30 @@ public class Simulator{
      * randomly samples a fraction [samplingRatio] from theorectical spectrum in r repetitions.
      */
     private void sampleSpectrum(int r, double samplingRatio, String expName){
+	//int[] indices = new int[this.theoSpectrum.size()];
+	ArrayList<Integer> indices = new ArrayList<>();
+	for(int i=0;i<this.theoSpectrum.size();i++)
+	    indices.add(new Integer(i));
 	if(samplingRatio > 0 && samplingRatio <= 1){
-	    Random rand = new Random();
+	    //Random rand = new Random();
 	    for(int i=0; i<r; i++)
-		this.sampleSpectrumSingle(samplingRatio, rand, expName + "_" + i);
+		this.sampleSpectrumSingle(samplingRatio, indices, expName + "_" + i);
 	}
     }
     
     /*
      * randomly samples a fraction [samplingRatio] from theorectical spectrum.
      */
-    private void sampleSpectrumSingle(double samplingRatio, Random rand, String filePrefix){
+    private void sampleSpectrumSingle(double samplingRatio, ArrayList<Integer> indices, String filePrefix){
 	StringBuffer bf = new StringBuffer("#n = " + this.clen + "\n");
 	StringBuffer answerbf = new StringBuffer("#n = " + this.clen + "\n");
 	int ns = (int) Math.ceil(this.theoSpectrum.size() * samplingRatio);
-	int[] indices = rand.ints(ns, 0, this.theoSpectrum.size()).toArray();
-	for(int i:indices){
-	    bf.append(this.theoSpectrum.get(i).getWeight() + "\n");
-	    answerbf.append(this.theoSpectrum.get(i).toString() + "\n");
+	Collections.shuffle(indices);
+	//int[] indices = rand.ints(ns, 0, this.theoSpectrum.size()).toArray();
+	
+	for(int i=0; i<ns; i++){
+	    bf.append(this.theoSpectrum.get(indices.get(i).intValue()).getWeight() + "\n");
+	    answerbf.append(this.theoSpectrum.get(indices.get(i).intValue()).toString() + "\n");
 	}
 
 	BufferedWriter bw = null;
@@ -329,19 +335,19 @@ public class Simulator{
 	    System.err.println("\tl        [INT]  \tLength of cyclopeptide");	
 	    System.err.println("\tr        [INT]  \tNumber of simulations");
 	    System.err.println("\tf        [FLOAT]\tSampling ratio. How much of theoretical spectrum you "
-			       +"\t                \twant to sample. (0-1.0]");
+			       +"\n\t                \twant to sample. (0-1.0]");
 	    System.err.println("\tsf       [STR]  \tFilename for theoretical spectrum. If <cpepf> is given," 
-			       +"\t                \tthis is an input file containing theoretical spectrum."
-			       +"\t                \tIf <cpepf> is given and <sf> is NOT found, it will overwrite.");
+			       +"\n\t                \tthis is an input file containing theoretical spectrum."
+			       +"\n\t                \tIf <cpepf> is given and <sf> is NOT found, it will overwrite.");
 	    System.err.println("\tchrf     [STR]  \tCharacterset file");
 	    System.err.println("\toDir     [STR]  \tOutput directory (ex: data/int_simul1)");
 	    System.err.println("\tcpepf    [STR]  \tFile containing a single line : '-' delimited cyclopeptide"
-			       +"\t                \tof length l (ex: AA15-AA3-AA5-AA8-AA18-AA13");
+			       +"\n\t                \tof length l (ex: AA15-AA3-AA5-AA8-AA18-AA13");
 	    System.err.println("\tn        [INT]  \tSize of character set");
 	    System.err.println("\tminW     [FLOAT]\tMinimum weight allowed");
 	    System.err.println("\tmaxW     [FLOAT]\tMaximum weight allowed");
 	    System.err.println("\tcf       [STR]  \tFilename to output a generated set of characters and their" 
-			       +"\t                \tassociated weights");
+			       +"\n\t                \tassociated weights");
 	    System.err.println("\tInt?     [YyNn] \t Force weights to be integers. [default:N]");
 	}
 		
