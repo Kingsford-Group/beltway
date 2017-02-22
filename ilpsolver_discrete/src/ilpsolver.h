@@ -30,11 +30,12 @@ public:
 	GRBModel * model;
 	GRBEnv * env;
 
-	vector< vector<GRBVar> > xvars;		// amino acid variables
-	vector< vector<GRBVar> > lvars;		// lower endpoints variables
-	vector< vector<GRBVar> > uvars;		// upper endpoints variables
-	vector< vector<GRBVar> > rvars;		// range variables
-	vector<GRBVar> evars;				// error variables
+	vector< vector<GRBVar> > xvars;			// amino acid variables
+	vector< vector<GRBVar> > lvars;			// lower endpoints variables
+	vector< vector<GRBVar> > uvars;			// upper endpoints variables
+	vector< vector<GRBVar> > rvars;			// range variables
+	vector< vector<GRBLinExpr> > rexprs;	// range expressions
+	vector<GRBVar> evars;					// error variables
 
 	// results
 	vector<int> xassign;
@@ -66,6 +67,7 @@ private:
 	int add_lower_endpoints_constraints();
 	int add_upper_endpoints_constraints();
 	int add_range_constraints();
+	int compute_range_expressions();
 	int add_error_constraints();
 
 	// cutting planes (extra constraints)

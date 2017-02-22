@@ -27,14 +27,17 @@ int ilpsolver::solve()
 		add_amino_acid_variables();
 		add_lower_endpoints_variables();
 		add_upper_endpoints_variables();
-		add_range_variables();
+		//add_range_variables();
 		add_error_variables();
 		
 		add_amino_acid_constraints();
 		add_lower_endpoints_constraints();
 		add_upper_endpoints_constraints();
-		add_range_constraints();
+		compute_range_expressions();
+		//add_range_constraints();
 		add_error_constraints();
+
+		//add_ordering_cutting_planes();
 		
 		set_objective();
 
@@ -245,8 +248,10 @@ int ilpsolver::add_upper_endpoints_constraints()
 	return 0;
 }
 
-int ilpsolver::add_range_constraints()
+int ilpsolver::compute_range_expressions()
 {
+	rexprs.clear();
+	rexprs.resize(slots);
 	for(int k = 0; k < slots; k++)
 	{
 		for(int l = 0; l < slots; l++)
@@ -279,7 +284,19 @@ int ilpsolver::add_range_constraints()
 					}
 				}
 			}
-			model->addConstr(rvars[k][l], GRB_EQUAL, expr);
+			rexprs[k].push_back(expr);
+		}
+	}
+	return 0;
+}
+
+int ilpsolver::add_range_constraints()
+{
+	for(int k = 0; k < slots; k++)
+	{
+		for(int l = 0; l < slots; l++)
+		{
+			model->addConstr(rvars[k][l], GRB_EQUAL, rexprs[k][l]);
 		}
 	}
 	return 0;
@@ -296,8 +313,8 @@ int ilpsolver::add_error_constraints()
 				double bound = 0;
 				if(k <= l) bound = (l - k + 1) * max_weight;
 				else bound = (l + 1 + slots - k) * max_weight;
-				GRBLinExpr expr1 = rvars[k][l] - spectrum[p] + bound * (lvars[p][k] + uvars[p][l] - 2);
-				GRBLinExpr expr2 = spectrum[p] - rvars[k][l] + bound * (lvars[p][k] + uvars[p][l] - 2);
+				GRBLinExpr expr1 = rexprs[k][l] - spectrum[p] + bound * (lvars[p][k] + uvars[p][l] - 2);
+				GRBLinExpr expr2 = spectrum[p] - rexprs[k][l] + bound * (lvars[p][k] + uvars[p][l] - 2);
 				model->addConstr(evars[p], GRB_GREATER_EQUAL, expr1);
 				model->addConstr(evars[p], GRB_GREATER_EQUAL, expr2);
 			}
@@ -325,7 +342,7 @@ int ilpsolver::add_ordering_cutting_planes()
 								double bound = 0;
 								if(k2 <= l2) bound = (l2 - k2 + 1) * max_weight;
 								else bound = (l2 + 1 + slots - k2) * max_weight;
-								GRBLinExpr expr1 = rvars[k1][l1] - rvars[k2][l2];
+								GRBLinExpr expr1 = rexprs[k1][l1] - rexprs[k2][l2];
 								GRBLinExpr expr2 = (lvars[p1][k1] + uvars[p1][l1] + lvars[p2][k2] + uvars[p2][l2] - 4) * bound;
 								model->addConstr(expr1, GRB_GREATER_EQUAL, expr2);
 							}
@@ -334,7 +351,7 @@ int ilpsolver::add_ordering_cutting_planes()
 								double bound = 0;
 								if(k1 <= l1) bound = (l1 - k1 + 1) * max_weight;
 								else bound = (l1 + 1 + slots - k1) * max_weight;
-								GRBLinExpr expr1 = rvars[k2][l2] - rvars[k1][l1];
+								GRBLinExpr expr1 = rexprs[k2][l2] - rexprs[k1][l1];
 								GRBLinExpr expr2 = (lvars[p1][k1] + uvars[p1][l1] + lvars[p2][k2] + uvars[p2][l2] - 4) * bound;
 								model->addConstr(expr1, GRB_GREATER_EQUAL, expr2);
 							}
@@ -406,7 +423,8 @@ int ilpsolver::collect_results()
 		int u = uassign[p];
 		assert(l >= 0 && l < slots);
 		assert(u >= 0 && u < slots);
-		double w = rvars[l][u].get(GRB_DoubleAttr_X);
+		//double w = rexprs[l][u].get(GRB_DoubleAttr_X);
+		double w = rexprs[l][u].getValue();
 		wassign.push_back(w);
 	}
 
