@@ -34,8 +34,6 @@ public:
 	vector< vector<GRBVar> > lvars;		// lower endpoints variables
 	vector< vector<GRBVar> > uvars;		// upper endpoints variables
 	vector< vector<GRBVar> > rvars;		// range variables
-	vector< vector<GRBVar> > ovars;		// map location  variables
-	vector< vector< vector<GRBVar> > > svars;		// map location acit variables
 	vector<GRBVar> evars;				// error variables
 
 	// results
@@ -44,8 +42,6 @@ public:
 	vector<int> uassign;
 	vector<double> wassign;
 	vector<double> eassign;
-	vector< vector<int> > sjassign;
-	vector< vector<int> > siassign;
 	
 public:
 	int solve();
@@ -64,9 +60,6 @@ private:
 	int add_upper_endpoints_variables();
 	int add_range_variables();
 	int add_error_variables();
-	int add_set_map_variables();
-        int add_set_acid_map_variables();
-
 
 	// add constraints
 	int add_amino_acid_constraints();
@@ -74,12 +67,6 @@ private:
 	int add_upper_endpoints_constraints();
 	int add_range_constraints();
 	int add_error_constraints();
-        int add_set_map_lbound_constraints();
-        int add_set_map_ubound_constraints();
-        int add_set_map_constraints();
-        int add_set_acid_map_constraints();
-        int add_set_location_map_ubound_constraints();
-        int add_set_location_map_lbound_constraints();
 
 	// cutting planes (extra constraints)
 	int add_ordering_cutting_planes();
