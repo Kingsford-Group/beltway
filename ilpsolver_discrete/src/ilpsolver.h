@@ -71,6 +71,7 @@ private:
 	int add_error_constraints();
 
 	// cutting planes (extra constraints)
+	int add_anchor();
 	int add_ordering_cutting_planes();
 
 	// set objective
