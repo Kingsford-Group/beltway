@@ -33,6 +33,7 @@ public:
 	vector< vector<GRBVar> > xvars;		// amino acid variables
 	vector< vector<GRBVar> > lvars;		// lower endpoints variables
 	vector< vector<GRBVar> > uvars;		// upper endpoints variables
+	vector< vector< vector<GRBVar> > > mvars;		// region variables (M replaces U and L)
 	vector< vector<GRBVar> > rvars;		// range variables
 	vector< vector<GRBVar> > ovars;		// map location  variables
 	vector< vector< vector<GRBVar> > > svars;		// map location acit variables
@@ -46,11 +47,15 @@ public:
 	vector<double> eassign;
 	vector< vector<int> > sjassign;
 	vector< vector<int> > siassign;
+	vector< vector<int> > massign;
 	
 public:
 	int solve();
 	int print();
 	int write(const string &file);
+    int reset();
+    int greedy_warm_start();
+    int graph_greedy_warm_start();
 
 private:
 	// read input files
@@ -66,6 +71,8 @@ private:
 	int add_error_variables();
 	int add_set_map_variables();
         int add_set_acid_map_variables();
+        int add_range_map_variables();
+        
 
 
 	// add constraints
@@ -80,6 +87,14 @@ private:
         int add_set_acid_map_constraints();
         int add_set_location_map_ubound_constraints();
         int add_set_location_map_lbound_constraints();
+        int add_range_map_constraints();
+        int add_error_constraints_mvars();
+        int add_order_constraints();
+        int add_anchor();
+        
+    //warm start
+    int set_mvars();
+    int set_xvars();
 
 	// cutting planes (extra constraints)
 	int add_ordering_cutting_planes();
