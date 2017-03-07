@@ -56,7 +56,7 @@ public:
     int reset();
     int greedy_warm_start();
     int graph_greedy_warm_start();
-
+    
 private:
 	// read input files
 	int read_alphabet(const string &file);
@@ -95,6 +95,9 @@ private:
     //warm start
     int set_mvars();
     int set_xvars();
+    double graph_greedy_warm_start_helper(int edges, bool complete, int sp, vector< vector<double> > spectrum_sort, vector<int> assigned, vector<int> connectable, vector< vector <double> > connections, vector< vector<int> > direct_edges, vector<int> assignment, double total_error, vector<int> my_xassign, vector<int> my_lassign, vector<int> my_uassign);
+    double best_total_error;
+    
 
 	// cutting planes (extra constraints)
 	int add_ordering_cutting_planes();

@@ -1081,20 +1081,398 @@ int ilpsolver::greedy_warm_start(){
 	return 0;
 }
 
+double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int sp, vector< vector<double> > spectrum_sort, vector<int> assigned, vector<int> connectable, vector< vector <double> > connections, vector< vector<int> > direct_edges, vector<int> assignment, double total_error, vector<int> my_xassign, vector<int> my_lassign, vector<int> my_uassign){
+    
+    if(best_total_error != -1 && best_total_error < total_error){
+        return total_error;
+    }
+
+    if(sp == spectrum_sort.size()){
+        printf("Total Error: %.0lf\tBest Error: %.0lf\n",total_error,best_total_error);
+        if(total_error < best_total_error || best_total_error == -1){
+            best_total_error = total_error;
+            xassign = my_xassign;
+            lassign = my_lassign;
+            uassign = my_uassign;
+        }
+        return total_error;   
+    }
+    
+    int p = (int) spectrum_sort[sp][1];
+    
+    
+     if(!complete && edges==slots-1 && assigned.size() == slots){
+        complete = true;
+        
+        int min_x_index = aa_mass.size();
+        int min_x_slot = -1;
+        for(int i=0;i<xassign.size();i++){
+            //printf("Xassign[%d] = %d\n",i,my_xassign[i]);
+            if(my_xassign[i] < min_x_index){
+                min_x_index = my_xassign[i];
+                min_x_slot = i;
+            }
+        }
+        
+        for(int i=0; i<assigned.size(); i++){
+            for(int j=0; j<assigned.size(); j++){
+                printf("%.0lf (%d)\t",connections[i][j],direct_edges[i][j]);
+            }
+            printf("\n");
+        }
+
+        vector<int> new_assignment;
+        int i=min_x_slot;
+        int i_prev = -1;
+        new_assignment.push_back(i);
+        while(new_assignment.size()<assignment.size()){
+            bool found_new_j = false;
+            for(int j=0;j<slots && !found_new_j;j++){
+                printf("i: %d\tj:%d\ti_prev: %d\tDE: %d\n",i,j,i_prev,direct_edges[i][j]);
+                if(direct_edges[i][j] && j!=i_prev){
+                    new_assignment.push_back(j);
+                    i_prev = i;
+                    i = j;
+                    found_new_j = true;
+                    break;
+                }
+                if(i!=j && connectable[i] == 1 && connectable[j]==1){
+                    new_assignment.push_back(j);
+                    i_prev = i;
+                    i = j;
+                    found_new_j = true;
+                    break;
+                }
+            }
+            assert(found_new_j);
+        }
+        
+        for(int i=0;i<uassign.size();i++){
+            if(uassign[i] != -1){
+                int k = -1;
+                for(int j=0;j<new_assignment.size();j++){
+                    if(uassign[i] == new_assignment[j]) k = j;
+                }
+                uassign[i] = k;
+            }
+        }
+        for(int i=0;i<lassign.size();i++){
+            if(lassign[i] != -1){
+                int k = -1;
+                for(int j=0;j<new_assignment.size();j++){
+                    if(lassign[i] == new_assignment[j]) k = j;
+                }
+                lassign[i] = k;
+            }
+        }
+        vector<int> save_xassign = my_xassign;
+        for(int i=0;i<my_xassign.size();i++){
+            //printf("New Xassign: %d\tOld: %d\t(%d->%d)\n",my_xassign[i],save_xassign[new_assignment[i]],i,new_assignment[i]);
+            my_xassign[i] = save_xassign[new_assignment[i]];
+            connections[i][i] = aa_mass[my_xassign[i]];
+        }
+        
+        //do reverse range calculations
+        double sum = 0;
+        for(int i=0; i<assigned.size(); i++){
+            sum += connections[i][i];
+        }
+        
+        for(int i=0;i<assigned.size();i++){
+            for(int j=i+1;j<assigned.size();j++){
+                int in_sum = 0;
+                for(int k=i;k<=j;k++) in_sum += aa_mass[my_xassign[k]];
+                connections[i][j] = in_sum;
+                connections[j][i] = sum - in_sum + aa_mass[my_xassign[i]] + aa_mass[my_xassign[j]];
+            }
+        }
+        for(int i=0; i<assigned.size(); i++){
+            for(int j=0; j<assigned.size(); j++){
+                printf("%.0lf (%d)\t",connections[i][j],direct_edges[i][j]);
+            }
+            printf("\n");
+        }
+    }
+    
+    
+    
+    double min_slot_dist = abs((double)(aa_mass[0] - spectrum_sort[sp][0]));
+    vector<int> min_slot_j;
+    min_slot_j.clear();
+    
+    if(assigned.size() < slots){
+    
+        for(int j=0;j<aa_mass.size();j++){
+            double dist = abs((aa_mass[j] - spectrum_sort[sp][0]));
+            
+            if(min_slot_dist >= dist){
+                if(min_slot_dist > dist){
+                    min_slot_j.clear();
+                    min_slot_dist = dist;
+                }
+                min_slot_j.push_back(j);
+            }
+        }
+    }else{
+        min_slot_dist = -1;
+        min_slot_j.clear();
+    }
+    
+    vector<int> min_range_i;
+    min_range_i.clear();
+    vector<int> min_range_j;
+    min_range_j.clear();
+    double min_range_dist = -1;
+    
+    vector<int> min_new_edge_i;
+    vector<int> min_new_edge_j;
+    vector<int> min_new_edge_k;
+    vector<int> min_new_edge_l;
+    min_new_edge_i.clear();
+    min_new_edge_j.clear();
+    min_new_edge_k.clear();
+    min_new_edge_l.clear();
+    double min_new_edge_dist = -1;
+    
+    vector<int> new_aa_edge_a;
+    vector<int> new_aa_edge_i;
+    vector<int> new_aa_edge_j;
+    new_aa_edge_a.clear();
+    new_aa_edge_i.clear();
+    new_aa_edge_j.clear();
+    double new_aa_edge_dist = -1;
+    
+    if(assigned.size()>0){
+        for(int i = 0; i < assigned.size(); i++){
+            for(int j=0;j<assigned.size();j++){
+                if(connections[i][j]!=-1){
+                    double dist = abs(connections[i][j] - spectrum_sort[sp][0]);
+                    if(min_range_dist >= dist || min_range_dist == -1){
+                        if(min_range_dist > dist || min_range_dist == -1){
+                            min_range_dist = dist;
+                            min_range_i.clear();
+                            min_range_j.clear();
+                        }
+                        min_range_i.push_back(i);
+                        min_range_j.push_back(j);
+                    }
+                }
+            }
+        }
+        
+        if(!complete){
+            for(int i=0; i<assigned.size(); i++){
+                for(int j=0;j<assigned.size();j++){
+                    for(int k=0;k<assigned.size();k++){
+                        for(int l=0;l<assigned.size();l++){
+                            //printf("i,k: %.0lf\tl,j: %.0lf\tk: %d\tl: %d\tk,l: %.0lf\ti,j: %.0lf\n",connections[i][k],connections[l][j],connectable[k],connectable[l],connections[k][l],connections[i][j]);
+                            if(connections[i][k] != -1 && connections[l][j] != -1 && connectable[k]>0 && connectable[l]>0 && connections[k][l] == -1 && connections[i][j]==-1){
+                                double dist = abs(connections[i][k] + connections[l][j] - spectrum_sort[sp][0]);
+                                if(min_new_edge_dist >= dist || min_new_edge_dist == -1){
+                                    if(min_new_edge_dist > dist || min_new_edge_dist == -1){
+                                        min_new_edge_dist = dist;
+                                            min_new_edge_i.clear();
+                                            min_new_edge_j.clear();
+                                            min_new_edge_k.clear();
+                                            min_new_edge_l.clear();
+                                    }
+                                    min_new_edge_i.push_back(i);
+                                    min_new_edge_j.push_back(j);
+                                    min_new_edge_k.push_back(k);
+                                    min_new_edge_l.push_back(l);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if(assigned.size() < slots){
+                for(int i=0; i<assigned.size(); i++){
+                    for(int j=0;j<assigned.size();j++){
+                        if(connectable[j]>0 && connections[i][j]!=-1){
+                            for(int k=0;k<aa_mass.size();k++){
+                                double dist = abs(aa_mass[k] + connections[i][j] - spectrum_sort[sp][0]);
+                                //printf("new_aa_edge_dist: %.0lf\tk: %d\ti: %d\tj: %d\tdist: %.0lf\n",new_aa_edge_dist,k,i,j,dist);
+                                if(new_aa_edge_dist >= dist || new_aa_edge_dist == -1){
+                                    if(new_aa_edge_dist > dist || new_aa_edge_dist == -1){
+                                        new_aa_edge_dist = dist;                                
+                                        new_aa_edge_a.clear();
+                                        new_aa_edge_i.clear();
+                                        new_aa_edge_j.clear();
+                                    }
+                                    new_aa_edge_a.push_back(k);
+                                    new_aa_edge_i.push_back(i);
+                                    new_aa_edge_j.push_back(j); 
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }//Assigned if
+    
+    printf("SP: %d\tRange: (%0.lf,%d)\tSlot: (%.0lf,%d)\tEdge: (%.0lf,%d)\tAA Edge: (%0.lf,%d)\tComplete: %d\tEdges: %d\tSize: %.0lf\n",sp,min_range_dist,min_range_j.size(),min_slot_dist,min_slot_j.size(),min_new_edge_dist,min_new_edge_i.size(),new_aa_edge_dist,new_aa_edge_a.size(),complete,edges,spectrum_sort[sp][0]);
+    for(int i=0; i<assigned.size(); i++){
+        //printf("%d:(%d,%d)\t",i,connectable[i],assignment[i]);
+    }
+    /*for(int i=0; i<assigned.size(); i++){
+        for(int j=0; j<assigned.size(); j++){
+            printf("%.0lf (%d)\t",connections[i][j],direct_edges[i][j]);
+        }
+        printf("\n");
+    }*/
+    //printf("\n");
+    if(min_range_dist != -1 && 
+        (min_range_dist <= min_slot_dist || min_slot_dist == -1) &&
+        (min_range_dist <= min_new_edge_dist || min_new_edge_dist == -1) &&
+        (min_range_dist <= new_aa_edge_dist || new_aa_edge_dist == -1)){
+        //for(int s=0;s<min_range_j.size();s++){
+        for(int s=0;s<=0;s++){
+            vector<int> pass_lassign = my_lassign;
+            vector<int> pass_uassign = my_uassign;
+            pass_uassign[p] = min_range_i[s]; 
+            pass_lassign[p] = min_range_j[s];
+        
+            graph_greedy_warm_start_helper(edges,complete,sp+1,spectrum_sort,assigned,connectable,connections,direct_edges,assignment,total_error+min_range_dist,my_xassign,pass_lassign,pass_uassign);
+        }
+    }
+    if(min_new_edge_dist != -1 &&
+        (min_new_edge_dist <= min_range_dist || min_range_dist == -1) &&
+        (min_new_edge_dist <= min_slot_dist || min_slot_dist == -1) &&
+        (min_new_edge_dist <= new_aa_edge_dist || new_aa_edge_dist == -1)){
+        
+        for(int s=0;s<min_new_edge_i.size();s++){
+            vector<int> pass_lassign = my_lassign;
+            vector<int> pass_uassign = my_uassign;
+            vector<int> pass_connectable = connectable;
+            vector< vector <double> > pass_connections = connections;
+            vector< vector<int> > pass_direct_edges = direct_edges;
+        
+            pass_uassign[p] = min_new_edge_i[s]; 
+            pass_lassign[p] = min_new_edge_i[s];
+        
+            pass_connectable[min_new_edge_k[s]]--;
+            pass_connectable[min_new_edge_l[s]]--;
+            pass_direct_edges[min_new_edge_k[s]][min_new_edge_l[s]] = 1;
+            pass_direct_edges[min_new_edge_l[s]][min_new_edge_k[s]] = 1;
+            //printf("New Edge\ti:%d\tj:%d\tk:%d\tl:%d\n",min_new_edge_i,min_new_edge_j,min_new_edge_k,min_new_edge_l);
+            for(int i=0; i<assigned.size(); i++){
+                for(int j=0;j<assigned.size();j++){
+                    if(i!=j && pass_connections[i][min_new_edge_k[s]] != -1 && pass_connections[min_new_edge_l[s]][j] != -1 && pass_connections[i][j]==-1){
+                        pass_connections[i][j] = pass_connections[i][min_new_edge_k[s]] + pass_connections[min_new_edge_l[s]][j];
+                        //printf("Assign (A): (%d,%d)[%.0lf] from (%d,%d)[%.0lf] + (%d,%d)[%.0lf]\n",i,j,pass_connections[i][j],i,min_new_edge_k,pass_connections[i][min_new_edge_k],min_new_edge_l,j,pass_connections[min_new_edge_l][j]);
+                    }//else printf("Not Assign: (%d,%d)[%.0lf] from (%d,%d)[%.0lf] + (%d,%d)[%.0lf]\n",i,j,pass_connections[i][j],i,min_new_edge_k,pass_connections[i][min_new_edge_k],min_new_edge_l,j,pass_connections[min_new_edge_l][j]);
+                    if(i!=j && pass_connections[j][min_new_edge_k[s]] != -1 && pass_connections[min_new_edge_l[s]][i] != -1 && pass_connections[j][i]==-1){
+                        pass_connections[j][i] = pass_connections[j][min_new_edge_k[s]] + pass_connections[min_new_edge_l[s]][i];
+                        //printf("Assign (B): (%d,%d)[%.0lf] from (%d,%d)[%.0lf] + (%d,%d)[%.0lf]\n",j,i,pass_connections[j][i],j,min_new_edge_k,pass_connections[j][min_new_edge_k],min_new_edge_l,i,pass_connections[min_new_edge_l][i]);
+                    }//else printf("Not Assign: (%d,%d)[%.0lf] from (%d,%d)[%.0lf] + (%d,%d)[%.0lf]\n",j,i,pass_connections[j][i],j,min_new_edge_k,pass_connections[j][min_new_edge_k],min_new_edge_l,i,pass_connections[min_new_edge_l][i]);
+                
+                    if(i!=j && pass_connections[i][min_new_edge_l[s]] != -1 && pass_connections[min_new_edge_k[s]][j] != -1 && pass_connections[i][j]==-1){
+                        pass_connections[i][j] = pass_connections[i][min_new_edge_l[s]] + pass_connections[min_new_edge_k[s]][j];
+                        //printf("Assign (C): (%d,%d)[%.0lf] from (%d,%d)[%.0lf] + (%d,%d)[%.0lf]\n",i,j,pass_connections[i][j],i,min_new_edge_l,pass_connections[i][min_new_edge_l],min_new_edge_k,j,pass_connections[min_new_edge_k][j]);
+                    
+                    }//else printf("Not Assign: (%d,%d)[%.0lf] from (%d,%d)[%.0lf] + (%d,%d)[%.0lf]\n",i,j,pass_connections[i][j],i,min_new_edge_l,pass_connections[i][min_new_edge_l],min_new_edge_k,j,pass_connections[min_new_edge_k][j]);
+                    if(i!=j && pass_connections[j][min_new_edge_l[s]] != -1 && pass_connections[min_new_edge_k[s]][i] != -1 && pass_connections[j][i]==-1){
+                        pass_connections[j][i] = pass_connections[j][min_new_edge_l[s]] + pass_connections[min_new_edge_k[s]][i];
+                        //printf("Assign (D): (%d,%d)[%.0lf] from (%d,%d)[%.0lf] + (%d,%d)[%.0lf]\n",j,i,pass_connections[j][i],j,min_new_edge_l,pass_connections[j][min_new_edge_l],min_new_edge_k,i,pass_connections[min_new_edge_k][i]);
+                    }//else printf("Not Assign: (%d,%d)[%.0lf] from (%d,%d)[%.0lf] + (%d,%d)[%.0lf]\n",j,i,pass_connections[j][i],j,min_new_edge_l,pass_connections[j][min_new_edge_l],min_new_edge_k,i,pass_connections[min_new_edge_k][i]);
+                
+                }
+            }
+        
+            graph_greedy_warm_start_helper(edges+1,complete,sp+1,spectrum_sort,assigned,pass_connectable,pass_connections,pass_direct_edges,assignment,total_error+min_new_edge_dist,my_xassign,pass_lassign,pass_uassign);
+        }
+    }
+    if(min_slot_dist != -1 && 
+        (min_slot_dist <= min_range_dist || min_range_dist == -1) &&
+        (min_slot_dist <= min_new_edge_dist || min_new_edge_dist == -1) &&
+        (min_slot_dist <= new_aa_edge_dist || new_aa_edge_dist == -1)){
+        for(int s=0;s<min_slot_j.size();s++){
+            vector<int> pass_assigned = assigned;
+            vector<int> pass_assignment = assignment;
+            vector< vector <double> > pass_connections = connections;
+            vector<int> pass_uassign = my_uassign;
+            vector<int> pass_lassign = my_lassign;
+            vector<int> pass_xassign = my_xassign;
+        
+            pass_assigned.push_back(1);
+            pass_assignment.push_back(min_slot_j[s]);
+        
+            int k = pass_assigned.size()-1;
+            pass_connections[k][k] = aa_mass[min_slot_j[s]];
+            pass_uassign[p] = k; 
+            pass_lassign[p] = k;
+            pass_xassign[k] = min_slot_j[s];
+    
+            graph_greedy_warm_start_helper(edges,complete,sp+1,spectrum_sort,pass_assigned,connectable,pass_connections,direct_edges,pass_assignment,total_error+min_slot_dist,pass_xassign,pass_lassign,pass_uassign);
+        }
+    }
+    if(new_aa_edge_dist != -1 && 
+        (new_aa_edge_dist <= min_slot_dist || min_slot_dist == -1) &&
+        (new_aa_edge_dist <= min_new_edge_dist || min_new_edge_dist == -1) &&
+        (new_aa_edge_dist <= min_range_dist || min_range_dist == -1)){
+        
+        for(int s=0;s<new_aa_edge_a.size();s++){
+            vector<int> pass_assigned = assigned;
+            vector<int> pass_assignment = assignment;
+            vector< vector <double> > pass_connections = connections;
+            vector<int> pass_connectable = connectable;
+            vector<int> pass_uassign = my_uassign;
+            vector<int> pass_lassign = my_lassign;
+            vector<int> pass_xassign = my_xassign;
+            vector< vector<int> > pass_direct_edges = direct_edges;
+        
+            assert(new_aa_edge_dist != -1);
+            pass_assigned.push_back(1);
+            pass_assignment.push_back(new_aa_edge_a[s]);
+            int k = pass_assigned.size()-1;
+            pass_connections[k][k] = aa_mass[new_aa_edge_a[s]];
+        
+            pass_connectable[k]--;
+            pass_connectable[new_aa_edge_j[s]]--;
+            pass_direct_edges[k][new_aa_edge_j[s]] = 1;
+            pass_direct_edges[new_aa_edge_j[s]][k] = 1;
+        
+            pass_uassign[p] = new_aa_edge_i[s]; 
+            pass_lassign[p] = k;
+        
+            pass_xassign[k] = new_aa_edge_a[s];
+        
+            for(int i=0; i<pass_assigned.size(); i++){
+                if(i!=k && pass_connections[i][new_aa_edge_j[s]]!=-1){
+                    pass_connections[i][k] = pass_connections[i][new_aa_edge_j[s]] + pass_connections[k][k];
+                    pass_connections[k][i] = pass_connections[i][new_aa_edge_j[s]] + pass_connections[k][k];
+                }
+            }
+            graph_greedy_warm_start_helper(edges+1,complete,sp+1,spectrum_sort,pass_assigned,pass_connectable,pass_connections,pass_direct_edges,pass_assignment,total_error+new_aa_edge_dist,pass_xassign,pass_lassign,pass_uassign);
+        }
+    }
+    
+    
+    
+    return total_error;
+}
+
 int ilpsolver::graph_greedy_warm_start(){
-    vector<bool> assigned;
+    vector<int> assigned;
     vector<int> connectable;
     vector< vector <double> > connections;
+    vector< vector<int> > direct_edges;
     vector<int> assignment;
 
     connections.clear();
     connections.resize(slots);
     connectable.resize(slots);
+    direct_edges.clear();
+    direct_edges.resize(slots);
     for(int i = 0; i < slots; i++){
         connectable[i] = 2;
         connections[i].resize(slots);
+        direct_edges[i].resize(slots);
         for(int j=0;j<slots;j++){
             connections[i][j] = -1;
+            direct_edges[i][j] = 0;
         }
     }
 
@@ -1120,184 +1498,9 @@ int ilpsolver::graph_greedy_warm_start(){
 	
 	std::sort (spectrum_sort.begin(), spectrum_sort.end(), less_than);
 	int num_assigned = 0;
-
-    bool complete = false;
-    int edges = 0;
-	for(int sp=0;sp<spectrum.size();sp++){
-	    int p = (int) spectrum_sort[sp][1];
-        
-        double min_slot_dist = abs((double)(aa_mass[0] - spectrum_sort[sp][0]));
-        int min_slot_j = 0;
-        
-	    if(assigned.size() < slots){
-	    
-	        for(int j=0;j<aa_mass.size();j++){
-	            double dist = abs((aa_mass[j] - spectrum_sort[sp][0]));
-	            
-	            if(min_slot_dist > dist){
-	                min_slot_j = j;
-	                min_slot_dist = dist;
-	            }
-	        }
-	    }else{
-	        min_slot_dist = -1;
-	        min_slot_j = -1;
-	    }
-        
-        int min_range_i = -1;
-        int min_range_j = -1;
-        double min_range_dist = -1;
-        
-        int min_new_edge_i = -1;
-        int min_new_edge_j = -1;
-        int min_new_edge_k = -1;
-        int min_new_edge_l = -1;
-        double min_new_edge_dist = -1;
-        
-        int new_aa_edge_a = -1;
-        int new_aa_edge_i = -1;
-        int new_aa_edge_j = -1;
-        double new_aa_edge_dist = -1;
-        
-	    if(assigned.size()>0){
-	        for(int i = 0; i < assigned.size(); i++){
-                for(int j=0;j<assigned.size();j++){
-                    if(connections[i][j]!=-1){
-                        double dist = abs(connections[i][j] - spectrum_sort[sp][0]);
-                        if(min_range_dist > dist || min_range_dist == -1){
-                            min_range_dist = dist;
-                            min_range_i = i;
-                            min_range_j = j;
-                        }
-                    }
-                }
-            }
-            
-            if(!complete){
-                for(int i=0; i<assigned.size(); i++){
-                    for(int j=0;j<assigned.size();j++){
-                        for(int k=0;k<assigned.size();k++){
-                            for(int l=0;l<assigned.size();l++){
-                                //printf("i,k: %.0lf\tl,j: %.0lf\tk: %d\tl: %d\tk,l: %.0lf\ti,j: %.0lf\n",connections[i][k],connections[l][j],connectable[k],connectable[l],connections[k][l],connections[i][j]);
-                                if(connections[i][k] != -1 && connections[l][j] != -1 && connectable[k]>0 && connectable[l]>0 && connections[k][l] == -1 && connections[i][j]==-1){
-                                    double dist = abs(connections[i][k] + connections[l][j] - spectrum_sort[sp][0]);
-                                    if(min_new_edge_dist > dist || min_new_edge_dist == -1){
-                                        min_new_edge_dist = dist;
-                                        min_new_edge_i = i;
-                                        min_new_edge_j = j;
-                                        min_new_edge_k = k;
-                                        min_new_edge_l = l;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                if(assigned.size() < slots){
-                    for(int i=0; i<assigned.size(); i++){
-                        for(int j=0;j<assigned.size();j++){
-                            if(connectable[j]>0 && connections[i][j]!=-1){
-                                for(int k=0;k<aa_mass.size();k++){
-                                    double dist = abs(aa_mass[k] + connections[i][j] - spectrum_sort[sp][0]);
-                                    //printf("new_aa_edge_dist: %.0lf\tk: %d\ti: %d\tj: %d\tdist: %.0lf\n",new_aa_edge_dist,k,i,j,dist);
-                                    if(new_aa_edge_dist > dist || new_aa_edge_dist == -1){
-                                        new_aa_edge_dist = dist;
-                                        new_aa_edge_a = k;
-                                        new_aa_edge_i = i;
-                                        new_aa_edge_j = j; 
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-	    }//Assigned if
-	    
-	    printf("Range: (%0.lf)\tSlot: (%.0lf)\tEdge: (%.0lf)\tAA Edge: (%0.lf)\tComplete: %d\tEdges: %d\tSize: %.0lf\n",min_range_dist,min_slot_dist,min_new_edge_dist,new_aa_edge_dist,complete,edges,spectrum_sort[sp][0]);
-	    for(int i=0; i<assigned.size(); i++){
-	        printf("%d:(%d,%d)\t",i,connectable[i],assignment[i]);
-	    }
-	    printf("\n");
-	    if(min_range_dist != -1 && 
-	        (min_range_dist <= min_slot_dist || min_slot_dist == -1) &&
-	        (min_range_dist <= min_new_edge_dist || min_new_edge_dist == -1) &&
-	        (min_range_dist <= new_aa_edge_dist || new_aa_edge_dist == -1)){
-	        
-	        uassign[p] = min_range_i; 
-	        lassign[p] = min_range_j;
-	        
-	    }else if(min_new_edge_dist != -1 &&
-	        (min_new_edge_dist <= min_slot_dist || min_slot_dist == -1) &&
-	        (min_new_edge_dist <= new_aa_edge_dist || new_aa_edge_dist == -1)){
-            
-            uassign[p] = min_new_edge_i; 
-	        lassign[p] = min_new_edge_j;
-	        
-	        connectable[min_new_edge_k]--;
-	        connectable[min_new_edge_l]--;
-	        edges++;
-	        for(int i=0; i<assigned.size(); i++){
-                for(int j=0;j<assigned.size();j++){
-                    if(i!=j && connections[i][min_new_edge_k] != -1 && connections[min_new_edge_l][j] != -1 && connections[i][j]==-1){
-                        connections[i][j] = connections[i][min_new_edge_k] + connections[min_new_edge_l][j];
-                    }
-                }
-            }
-        }else if(min_slot_dist != -1 &&
-	        (min_slot_dist <= new_aa_edge_dist || new_aa_edge_dist == -1)){
-            
-            assigned.push_back(true);
-            assignment.push_back(min_slot_j);
-            
-            int k = assigned.size()-1;
-            connections[k][k] = aa_mass[min_slot_j];
-            uassign[p] = k; 
-	        lassign[p] = k;
-	        xassign[k] = min_slot_j;
-        
-        }else{
-            assert(new_aa_edge_dist != -1);
-            assigned.push_back(true);
-            assignment.push_back(new_aa_edge_a);
-            int k = assigned.size()-1;
-            connections[k][k] = aa_mass[new_aa_edge_a];
-            
-            connectable[k]--;
-            connectable[new_aa_edge_j]--;
-            edges++;
-            
-            
-            uassign[p] = new_aa_edge_i; 
-	        lassign[p] = k;
-	        
-	        xassign[k] = new_aa_edge_a;
-	        
-            for(int i=0; i<assigned.size(); i++){
-                if(i!=k && connections[i][new_aa_edge_j]!=-1){
-                    connections[i][k] = connections[i][new_aa_edge_j] + connections[k][k];
-                }
-            }
-            
-        }
-        
-        if(!complete && edges==slots-1){
-            complete = true;
-            //do reverse range calculations
-            double sum = 0;
-            for(int i=0; i<assigned.size(); i++){
-                sum += connections[i][i];
-            }
-            
-            for(int i=0;i<assigned.size();i++){
-                for(int j=i+1;j<assigned.size();j++){
-                    connections[j][i] = sum - connections[i][j];
-                }
-            }
-            
-        }
-	    
-	}//SP loop
+    best_total_error = -1;
+    
+    graph_greedy_warm_start_helper(0, false, 0, spectrum_sort, assigned, connectable, connections, direct_edges, assignment, 0.0, xassign, lassign, uassign);
 
 
     
