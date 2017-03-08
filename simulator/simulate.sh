@@ -9,11 +9,11 @@ fi
 outDirInt=data/int_simul$1
 outDirFloat=data/float_simul$1
 
-mkdirhier $outDirInt
+mkdir -p $outDirInt
 java -jar build/GenerateCharacterSet.jar 50 50 400 charset.txt $outDirInt N Y
 seq 5 1 20 | xargs -I{} java -jar build/Simulator.jar {} 1 1.0 spectrum_{}.txt charset.txt $outDirInt N
 
 #float_simul1 --> floating-point weights
-mkdirhier $outDirFloat
+mkdir -p $outDirFloat
 java -jar build/GenerateCharacterSet.jar 50 50 400 charset.txt $outDirFloat N N
 seq 5 1 20 | xargs -I{} java -jar build/Simulator.jar {} 1 1.0 spectrum_{}.txt charset.txt $outDirFloat N
