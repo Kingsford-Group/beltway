@@ -21,7 +21,8 @@
   <target name="compile" depends="init">
     <echo>Compiling Java source</echo>
     
-    <javac srcdir="${dir.src}"
+    <javac includeantruntime="false"
+	   srcdir="${dir.src}"
            destdir="${dir.build.classes}" />
   </target>
   

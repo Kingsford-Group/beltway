@@ -14,37 +14,59 @@ public class Simulator{
 	this.theoSpectrum = new ArrayList<Peptide>();
     }
 
-    public Simulator(int cLen, int numSim, double sampRatio, int numChars, String theoSpectrumOutFile, double minWeight, double maxWeight, String charsetOutFile, String outDir, String useIntegerWeights){
+    public Simulator(int cLen, int numSim, double sampRatio, int numChars, String theoSpectrumOutFile, double minWeight, double maxWeight, String charsetOutFile, String outDir, String forceUniqWeights, String useIntegerWeights){
 	this();
 	this.expDir = (outDir.endsWith(File.separator) ? outDir : outDir + File.separator);
 	this.clen = cLen;
-	this.prefixW = new BigDecimal[cLen+1];
+	//this.prefixW = new BigDecimal[cLen+1];
 	if(this.cyclopeptide == null){
 	    System.err.println("cyclopeptide is NULL");
 	}
+	boolean forceUniq = ( (forceUniqWeights.equals("Y") || forceUniqWeights.equals("y")) ? true : false);
 	boolean intOnly = ( (useIntegerWeights.equals("Y") || useIntegerWeights.equals("y")) ? true : false);
-	GenerateCharacterSet.generate(numChars, minWeight, maxWeight, charsetOutFile, this.expDir, intOnly);
+	GenerateCharacterSet.generate(numChars, minWeight, maxWeight, charsetOutFile, this.expDir, forceUniq, intOnly);
 	
 	this.loadChar2WeightHash(charsetOutFile);
 	this.loadCyclopeptide(cLen, numSim);
 	
-	this.generateTheoreticalSpectrum(theoSpectrumOutFile);
+	boolean passUniqFilter = this.generateTheoreticalSpectrum(theoSpectrumOutFile, forceUniq);
+	int tries = 1;
+	if(forceUniq){
+	    while(!passUniqFilter){
+		this.loadCyclopeptide(cLen, numSim);
+		passUniqFilter = this.generateTheoreticalSpectrum(theoSpectrumOutFile, forceUniq);
+		tries++;
+	    }
+	    System.err.println("Took " + tries + " tries to get uniqWeights");
+	}
+	
 	this.sampleSpectrum(numSim, sampRatio, "cycoLen" + cLen);
     }
     
-    public Simulator(int cLen, int numSim, double sampRatio, String theoSpectrumOutFile, String charsetFile, String outDir, String cpepf){
+    public Simulator(int cLen, int numSim, double sampRatio, String theoSpectrumOutFile, String charsetFile, String outDir, String forceUniqWeights, String cpepf){
 	this();
 	System.err.println(cpepf);
 	this.expDir = (outDir.endsWith(File.separator) ? outDir : outDir + File.separator);
 	this.clen = cLen;
 	this.prefixW = new BigDecimal[cLen+1];
+	boolean forceUniq = ( (forceUniqWeights.equals("Y") || forceUniqWeights.equals("y")) ? true : false);
+
 	//this.cyclopeptide = cpep;
 	this.loadChar2WeightHash(charsetFile);
 	this.loadCyclopeptide(cLen, numSim, cpepf);
 
-	if(cpepf == null)
-	    this.generateTheoreticalSpectrum(theoSpectrumOutFile);
-	else
+	if(cpepf == null){
+	    boolean passUniqFilter = this.generateTheoreticalSpectrum(theoSpectrumOutFile, forceUniq);
+	    int tries = 1;
+	    if(forceUniq){
+		while(!passUniqFilter){
+		    this.loadCyclopeptide(cLen, numSim);
+		    passUniqFilter = this.generateTheoreticalSpectrum(theoSpectrumOutFile, forceUniq);
+		    tries++;
+		}
+		System.err.println("Took " + tries + " tries to get uniqWeights");
+	    }
+	}else
 	    this.loadTheoreticalSpectrum(theoSpectrumOutFile);
 	this.sampleSpectrum(numSim, sampRatio, "cycloLen" + cLen);
     }
@@ -61,7 +83,8 @@ public class Simulator{
 		    this.theoSpectrum.add(new Peptide(tokens[1].split(Simulator.delim), new BigDecimal(tokens[0]).setScale(4, RoundingMode.DOWN)));
 		}
 	    }else{
-		this.generateTheoreticalSpectrum(inF);
+		System.err.println("input Theoretical Spectrum file it not a file, so generating theoreticalSpectrum..");
+		this.generateTheoreticalSpectrum(inF, false);
 	    }
 	}catch(IOException ioe){
 	    ioe.printStackTrace();
@@ -70,19 +93,30 @@ public class Simulator{
     
     /*
      * generates theoretical spectrum for cyclopeptide
-     *
+     * @param forceUniq : if set, forces each entry in theoretical spectrum to be unique except for the entire cyclopeptide sequence(rotations)
      */
-    private void generateTheoreticalSpectrum(String outF){
+    private boolean generateTheoreticalSpectrum(String outF, boolean forceUniq){
+	HashSet<BigDecimal> spectraHash = null;
+	if(forceUniq)
+	    spectraHash = new HashSet<BigDecimal>();
+
 	String[] aas = this.cyclopeptide.getAAs();
-	
 	String[] tmpSeq;
+	BigDecimal curPeptideWeight;
 	for(int i=0; i<this.clen; i++){
 	    for(int j=i+1; j<=this.clen;j++){
 		tmpSeq = new String[j-i];
 		for(int k=i; k<j; k++)
 		    tmpSeq[k-i] = aas[k];
-
-		this.theoSpectrum.add(new Peptide(tmpSeq, this.prefixW[j].subtract(this.prefixW[i])));
+		curPeptideWeight = this.prefixW[j].subtract(this.prefixW[i]);
+		if(forceUniq){
+		    if(spectraHash.contains(curPeptideWeight))
+			return false;
+		    else
+			spectraHash.add(curPeptideWeight);
+		}
+		this.theoSpectrum.add(new Peptide(tmpSeq, curPeptideWeight));
+		
 
 		if(i > 0 && j < this.clen){
 		    tmpSeq = new String[ aas.length-j + i ];
@@ -92,8 +126,14 @@ public class Simulator{
 			offset = k-j;
 		    }for(int k=0;k<i;k++)
 			tmpSeq[offset+1+k] = aas[k];
-		    
-		    this.theoSpectrum.add(new Peptide(tmpSeq, this.prefixW[this.prefixW.length-1].subtract(this.prefixW[j].subtract(this.prefixW[i]))));
+		    curPeptideWeight = this.prefixW[this.prefixW.length-1].subtract(this.prefixW[j].subtract(this.prefixW[i]));
+		    if(forceUniq){
+			if(spectraHash.contains(curPeptideWeight))
+			    return false;
+			else
+			    spectraHash.add(curPeptideWeight);
+		    }
+		    this.theoSpectrum.add(new Peptide(tmpSeq, curPeptideWeight));
 		    
 		}
 	    }
@@ -124,6 +164,7 @@ public class Simulator{
 	}catch(IOException ioe){
 	    ioe.printStackTrace();
 	}
+	return true;
     }
     
 
@@ -245,6 +286,7 @@ public class Simulator{
 	
 	/* generate prefix weights */
 	int i = 0;
+	this.prefixW = new BigDecimal[l+1];
 	this.prefixW[i] = new BigDecimal("0").setScale(4, RoundingMode.DOWN);
 	for(String aa : aas){
 	    i++;
@@ -309,28 +351,28 @@ public class Simulator{
     public static void main(String[] args){
 	
 	//generate characterSet + cyclopeptide and use float weights and then simulate
-	if(args.length == 9){
-	    new Simulator(Integer.parseInt(args[0]) , Integer.parseInt(args[1]) , Double.parseDouble(args[2]) , Integer.parseInt(args[3]) , args[4], Double.parseDouble(args[5]) , Double.parseDouble(args[6]) , args[7] , args[8], "N");
+	if(args.length == 10){
+	    new Simulator(Integer.parseInt(args[0]) , Integer.parseInt(args[1]) , Double.parseDouble(args[2]) , Integer.parseInt(args[3]) , args[4], Double.parseDouble(args[5]) , Double.parseDouble(args[6]) , args[7] , args[8], args[9], "N");
 	}
 	//generate characterSet + cyclopeptide and use integer weights and then simulate
-	else if(args.length == 10){
-	    new Simulator(Integer.parseInt(args[0]) , Integer.parseInt(args[1]) , Double.parseDouble(args[2]) , Integer.parseInt(args[3]) , args[4], Double.parseDouble(args[5]) , Double.parseDouble(args[6]) , args[7] , args[8], args[9]);
+	else if(args.length == 11){
+	    new Simulator(Integer.parseInt(args[0]) , Integer.parseInt(args[1]) , Double.parseDouble(args[2]) , Integer.parseInt(args[3]) , args[4], Double.parseDouble(args[5]) , Double.parseDouble(args[6]) , args[7] , args[8], args[9], args[10]);
 	}
 	
 	//Generate cyclopeptide sequence using the input characterset and then simulate
-	else if(args.length == 6){
-	    new Simulator(Integer.parseInt(args[0]) , Integer.parseInt(args[1]) , Double.parseDouble(args[2]) , args[3], args[4], args[5], null);
+	else if(args.length == 7){
+	    new Simulator(Integer.parseInt(args[0]) , Integer.parseInt(args[1]) , Double.parseDouble(args[2]) , args[3], args[4], args[5], args[6], null);
 	}
 	//Using the input characterset as well as cyclopeptide, simulate
-	else if(args.length == 7){
-	    new Simulator(Integer.parseInt(args[0]) , Integer.parseInt(args[1]) , Double.parseDouble(args[2]) , args[3], args[4], args[5], args[6]);
+	else if(args.length == 8){
+	    new Simulator(Integer.parseInt(args[0]) , Integer.parseInt(args[1]) , Double.parseDouble(args[2]) , args[3], args[4], args[5], args[6], args[7]);
 	}else{
 	    System.err.println("USAGE:\n" 
 			       + "To generate characterset and simulate data:\n"
-			       + "        java Simulator <l> <r> <f> <n> <sf> <minW> <maxW> <cf> <oDir> [YyNn: INT?]\n" 
+			       + "        java Simulator <l> <r> <f> <n> <sf> <minW> <maxW> <cf> <oDir> <uniq: YyNn> [YyNn: INT?]\n" 
 			       + "\n" 
 			       + "To use input chracterset and simulate data based on the input:\n"
-			       + "        java Simulator <l> <r> <f> <sf> <chrf> <oDir> [cpep]\n");
+			       + "        java Simulator <l> <r> <f> <sf> <chrf> <oDir> <uniq: YyNn> [cpep]\n");
 	    System.err.println("Parameters:");
 	    System.err.println("\tl        [INT]  \tLength of cyclopeptide");	
 	    System.err.println("\tr        [INT]  \tNumber of simulations");
@@ -348,6 +390,8 @@ public class Simulator{
 	    System.err.println("\tmaxW     [FLOAT]\tMaximum weight allowed");
 	    System.err.println("\tcf       [STR]  \tFilename to output a generated set of characters and their" 
 			       +"\n\t                \tassociated weights");
+	    System.err.println("\tuniq    [YyNn] \tIf set(Yy), requires the cyclopeptide to have no subsegment with equal weights,\n"
+                             + "\t               \texcluding the cyclopetide itself");
 	    System.err.println("\tInt?     [YyNn] \t Force weights to be integers. [default:N]");
 	}
 		
