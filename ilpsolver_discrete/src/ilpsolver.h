@@ -94,6 +94,7 @@ private:
         int add_error_constraints_mvars();
         int add_order_constraints();
         int add_anchor();
+        int add_unique_map_constraints();
         
     //warm start
     int set_mvars();

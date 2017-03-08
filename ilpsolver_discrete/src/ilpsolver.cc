@@ -60,6 +60,7 @@ int ilpsolver::solve()
 		//add_order_constraints();
 		//add_error_constraints();
 		add_error_constraints_mvars();
+		add_unique_map_constraints();
 		//add_anchor();
 		//add_ordering_cutting_planes();
 		
@@ -661,6 +662,19 @@ int ilpsolver::add_anchor()
 	return 0;
 }
 
+int ilpsolver::add_unique_map_constraints(){
+        for(int p1=0;p1<spectrum.size();p1++){
+		    for(int p2=p1+1;p2<spectrum.size();p2++){
+		        for(int k=0;k<slots;k++){
+		            for(int l=0;l<slots;l++){
+		                GRBLinExpr expr = mvars[k][l][p1] + mvars[k][l][p2];
+		                model->addConstr(expr, GRB_LESS_EQUAL, 1);
+		            }
+		        }
+		    }
+		}
+        return 0;
+}
 
 int ilpsolver::set_objective()
 {
@@ -1083,6 +1097,8 @@ int ilpsolver::greedy_warm_start(){
 
 double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int sp, vector< vector<double> > spectrum_sort, vector<int> assigned, vector<int> connectable, vector< vector <double> > connections, vector< vector<int> > direct_edges, vector<int> assignment, double total_error, vector<int> my_xassign, vector<int> my_lassign, vector<int> my_uassign){
     
+    double equal_precision = 0.0001;
+    
     if((best_total_error != -1 && best_total_error < total_error) || best_total_error == 0){
         return total_error;
     }
@@ -1169,9 +1185,9 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
         string my_cycle = "";
         vector<int> save_xassign = my_xassign;
         for(int i=0;i<my_xassign.size();i++){
-            my_cycle += aa_list[my_xassign[i]];
             //printf("New Xassign: %d\tOld: %d\t(%d->%d)\n",my_xassign[i],save_xassign[new_assignment[i]],i,new_assignment[i]);
             my_xassign[i] = save_xassign[new_assignment[i]];
+            my_cycle += aa_list[my_xassign[i]];
             connections[i][i] = aa_mass[my_xassign[i]];
         }
         
@@ -1182,7 +1198,7 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
                 if(greedy_search_cycles_error[i] > total_error){
                     greedy_search_cycles_error[i] = total_error;
                 }else{
-                    return total_error;
+                    //return total_error;
                 }
             }
         }
@@ -1226,8 +1242,8 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
         for(int j=0;j<aa_mass.size();j++){
             double dist = abs((aa_mass[j] - spectrum_sort[sp][0]));
             
-            if(min_slot_dist >= dist){
-                if(min_slot_dist > dist){
+            if(min_slot_dist >= (dist - equal_precision)){
+                if(min_slot_dist > (dist - equal_precision)){
                     min_slot_j.clear();
                     min_slot_dist = dist;
                 }
@@ -1268,8 +1284,8 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
             for(int j=0;j<assigned.size();j++){
                 if(connections[i][j]!=-1){
                     double dist = abs(connections[i][j] - spectrum_sort[sp][0]);
-                    if(min_range_dist >= dist || min_range_dist == -1){
-                        if(min_range_dist > dist || min_range_dist == -1){
+                    if(min_range_dist >= (dist - equal_precision) || min_range_dist == -1){
+                        if(min_range_dist > (dist  - equal_precision) || min_range_dist == -1){
                             min_range_dist = dist;
                             min_range_i.clear();
                             min_range_j.clear();
@@ -1289,8 +1305,8 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
                             //printf("i,k: %.0lf\tl,j: %.0lf\tk: %d\tl: %d\tk,l: %.0lf\ti,j: %.0lf\n",connections[i][k],connections[l][j],connectable[k],connectable[l],connections[k][l],connections[i][j]);
                             if(connections[i][k] != -1 && connections[l][j] != -1 && connectable[k]>0 && connectable[l]>0 && connections[k][l] == -1 && connections[i][j]==-1){
                                 double dist = abs(connections[i][k] + connections[l][j] - spectrum_sort[sp][0]);
-                                if(min_new_edge_dist >= dist || min_new_edge_dist == -1){
-                                    if(min_new_edge_dist > dist || min_new_edge_dist == -1){
+                                if(min_new_edge_dist >= (dist - equal_precision) || min_new_edge_dist == -1){
+                                    if(min_new_edge_dist > (dist - equal_precision) || min_new_edge_dist == -1){
                                         min_new_edge_dist = dist;
                                             min_new_edge_i.clear();
                                             min_new_edge_j.clear();
@@ -1314,8 +1330,8 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
                             for(int k=0;k<aa_mass.size();k++){
                                 double dist = abs(aa_mass[k] + connections[i][j] - spectrum_sort[sp][0]);
                                 //printf("new_aa_edge_dist: %.0lf\tk: %d\ti: %d\tj: %d\tdist: %.0lf\n",new_aa_edge_dist,k,i,j,dist);
-                                if(new_aa_edge_dist >= dist || new_aa_edge_dist == -1){
-                                    if(new_aa_edge_dist > dist || new_aa_edge_dist == -1){
+                                if(new_aa_edge_dist >= (dist - equal_precision) || new_aa_edge_dist == -1){
+                                    if(new_aa_edge_dist > (dist - equal_precision) || new_aa_edge_dist == -1){
                                         new_aa_edge_dist = dist;                                
                                         new_aa_edge_a.clear();
                                         new_aa_edge_i.clear();
@@ -1345,9 +1361,9 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
     }*/
     //printf("\n");
     if(min_range_dist != -1 && 
-        (min_range_dist <= min_slot_dist || min_slot_dist == -1) &&
-        (min_range_dist <= min_new_edge_dist || min_new_edge_dist == -1) &&
-        (min_range_dist <= new_aa_edge_dist || new_aa_edge_dist == -1)){
+        (min_range_dist <= (min_slot_dist + equal_precision) || min_slot_dist == -1) &&
+        (min_range_dist <= (min_new_edge_dist + equal_precision)  || min_new_edge_dist == -1) &&
+        (min_range_dist <= (new_aa_edge_dist + equal_precision)  || new_aa_edge_dist == -1)){
         //for(int s=0;s<min_range_j.size();s++){
         for(int s=0;s<=0;s++){
             vector<int> pass_lassign = my_lassign;
@@ -1359,9 +1375,9 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
         }
     }
     if(min_new_edge_dist != -1 &&
-        (min_new_edge_dist <= min_range_dist || min_range_dist == -1) &&
-        (min_new_edge_dist <= min_slot_dist || min_slot_dist == -1) &&
-        (min_new_edge_dist <= new_aa_edge_dist || new_aa_edge_dist == -1)){
+        (min_new_edge_dist <= (min_range_dist + equal_precision)  || min_range_dist == -1) &&
+        (min_new_edge_dist <= (min_slot_dist + equal_precision)  || min_slot_dist == -1) &&
+        (min_new_edge_dist <= (new_aa_edge_dist + equal_precision)  || new_aa_edge_dist == -1)){
         
         for(int s=0;s<min_new_edge_i.size();s++){
             vector<int> pass_lassign = my_lassign;
@@ -1406,9 +1422,9 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
         }
     }
     if(min_slot_dist != -1 && 
-        (min_slot_dist <= min_range_dist || min_range_dist == -1) &&
-        (min_slot_dist <= min_new_edge_dist || min_new_edge_dist == -1) &&
-        (min_slot_dist <= new_aa_edge_dist || new_aa_edge_dist == -1)){
+        (min_slot_dist <= (min_range_dist + equal_precision)  || min_range_dist == -1) &&
+        (min_slot_dist <= (min_new_edge_dist + equal_precision)  || min_new_edge_dist == -1) &&
+        (min_slot_dist <= (new_aa_edge_dist + equal_precision)  || new_aa_edge_dist == -1)){
         for(int s=0;s<min_slot_j.size();s++){
             vector<int> pass_assigned = assigned;
             vector<int> pass_assignment = assignment;
@@ -1430,9 +1446,9 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
         }
     }
     if(new_aa_edge_dist != -1 && 
-        (new_aa_edge_dist <= min_slot_dist || min_slot_dist == -1) &&
-        (new_aa_edge_dist <= min_new_edge_dist || min_new_edge_dist == -1) &&
-        (new_aa_edge_dist <= min_range_dist || min_range_dist == -1)){
+        (new_aa_edge_dist <= (min_slot_dist + equal_precision)  || min_slot_dist == -1) &&
+        (new_aa_edge_dist <= (min_new_edge_dist + equal_precision)  || min_new_edge_dist == -1) &&
+        (new_aa_edge_dist <= (min_range_dist + equal_precision)  || min_range_dist == -1)){
         
         for(int s=0;s<new_aa_edge_a.size();s++){
             vector<int> pass_assigned = assigned;

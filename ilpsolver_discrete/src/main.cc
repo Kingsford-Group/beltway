@@ -52,7 +52,7 @@ int main(int argc, const char ** argv)
 		sv.spectrum = spectrum_save;*/
 		
 		//sv.greedy_warm_start();
-		sv.graph_greedy_warm_start();
+		if(!no_priming_contraints) sv.graph_greedy_warm_start();
 		
 		sv.solve();
         sv.write(argv[3]);
