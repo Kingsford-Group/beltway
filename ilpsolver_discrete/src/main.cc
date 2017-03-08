@@ -27,7 +27,7 @@ int main(int argc, const char ** argv)
 {
 	if(argc == 1)
 	{
-		cout << "usage: " << argv[0] << " <alphabet-file> <weights-file> <output-file> [-t ilp-time-limit]" << endl;
+		cout << "usage: " << argv[0] << " <alphabet-file> <weights-file> <output-file> [-t ilp-time-limit] [-max_error maximum-allowed-greedy-search-error] [-no_infinity] " << endl;
 		return 0;
 	}
 

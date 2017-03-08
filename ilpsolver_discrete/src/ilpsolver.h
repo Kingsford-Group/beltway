@@ -49,6 +49,9 @@ public:
 	vector< vector<int> > siassign;
 	vector< vector<int> > massign;
 	
+	vector<string> greedy_search_cycles;
+	vector<int> greedy_search_cycles_error;
+	
 public:
 	int solve();
 	int print();

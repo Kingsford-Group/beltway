@@ -1083,7 +1083,7 @@ int ilpsolver::greedy_warm_start(){
 
 double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int sp, vector< vector<double> > spectrum_sort, vector<int> assigned, vector<int> connectable, vector< vector <double> > connections, vector< vector<int> > direct_edges, vector<int> assignment, double total_error, vector<int> my_xassign, vector<int> my_lassign, vector<int> my_uassign){
     
-    if(best_total_error != -1 && best_total_error < total_error){
+    if((best_total_error != -1 && best_total_error < total_error) || best_total_error == 0){
         return total_error;
     }
 
@@ -1114,12 +1114,12 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
             }
         }
         
-        for(int i=0; i<assigned.size(); i++){
+        /*for(int i=0; i<assigned.size(); i++){
             for(int j=0; j<assigned.size(); j++){
                 printf("%.0lf (%d)\t",connections[i][j],direct_edges[i][j]);
             }
             printf("\n");
-        }
+        }*/
 
         vector<int> new_assignment;
         int i=min_x_slot;
@@ -1128,7 +1128,7 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
         while(new_assignment.size()<assignment.size()){
             bool found_new_j = false;
             for(int j=0;j<slots && !found_new_j;j++){
-                printf("i: %d\tj:%d\ti_prev: %d\tDE: %d\n",i,j,i_prev,direct_edges[i][j]);
+                //printf("i: %d\tj:%d\ti_prev: %d\tDE: %d\n",i,j,i_prev,direct_edges[i][j]);
                 if(direct_edges[i][j] && j!=i_prev){
                     new_assignment.push_back(j);
                     i_prev = i;
@@ -1165,12 +1165,33 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
                 lassign[i] = k;
             }
         }
+        
+        string my_cycle = "";
         vector<int> save_xassign = my_xassign;
         for(int i=0;i<my_xassign.size();i++){
+            my_cycle += aa_list[my_xassign[i]];
             //printf("New Xassign: %d\tOld: %d\t(%d->%d)\n",my_xassign[i],save_xassign[new_assignment[i]],i,new_assignment[i]);
             my_xassign[i] = save_xassign[new_assignment[i]];
             connections[i][i] = aa_mass[my_xassign[i]];
         }
+        
+        bool found_cycle = false;
+        for(int i=0;i<greedy_search_cycles.size();i++){
+            if(my_cycle == greedy_search_cycles[i]){
+                found_cycle = true;
+                if(greedy_search_cycles_error[i] > total_error){
+                    greedy_search_cycles_error[i] = total_error;
+                }else{
+                    return total_error;
+                }
+            }
+        }
+        if(!found_cycle){
+            greedy_search_cycles.push_back(my_cycle);
+            greedy_search_cycles_error.push_back(total_error);
+        }
+        
+        printf("My Cycle: %s\tMy Error: %.0lf\n",my_cycle.c_str(),total_error);
         
         //do reverse range calculations
         double sum = 0;
@@ -1186,12 +1207,12 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
                 connections[j][i] = sum - in_sum + aa_mass[my_xassign[i]] + aa_mass[my_xassign[j]];
             }
         }
-        for(int i=0; i<assigned.size(); i++){
+        /*for(int i=0; i<assigned.size(); i++){
             for(int j=0; j<assigned.size(); j++){
                 printf("%.0lf (%d)\t",connections[i][j],direct_edges[i][j]);
             }
             printf("\n");
-        }
+        }*/
     }
     
     
@@ -1312,7 +1333,7 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
         }
     }//Assigned if
     
-    printf("SP: %d\tRange: (%0.lf,%d)\tSlot: (%.0lf,%d)\tEdge: (%.0lf,%d)\tAA Edge: (%0.lf,%d)\tComplete: %d\tEdges: %d\tSize: %.0lf\n",sp,min_range_dist,min_range_j.size(),min_slot_dist,min_slot_j.size(),min_new_edge_dist,min_new_edge_i.size(),new_aa_edge_dist,new_aa_edge_a.size(),complete,edges,spectrum_sort[sp][0]);
+    //printf("SP: %d\tRange: (%0.lf,%d)\tSlot: (%.0lf,%d)\tEdge: (%.0lf,%d)\tAA Edge: (%0.lf,%d)\tComplete: %d\tEdges: %d\tSize: %.0lf\n",sp,min_range_dist,min_range_j.size(),min_slot_dist,min_slot_j.size(),min_new_edge_dist,min_new_edge_i.size(),new_aa_edge_dist,new_aa_edge_a.size(),complete,edges,spectrum_sort[sp][0]);
     for(int i=0; i<assigned.size(); i++){
         //printf("%d:(%d,%d)\t",i,connectable[i],assignment[i]);
     }
@@ -1498,8 +1519,9 @@ int ilpsolver::graph_greedy_warm_start(){
 	
 	std::sort (spectrum_sort.begin(), spectrum_sort.end(), less_than);
 	int num_assigned = 0;
-    best_total_error = -1;
-    
+    best_total_error = (max_error_allowed>=0)?(max_error_allowed+1):max_error_allowed;
+    greedy_search_cycles.clear();
+    greedy_search_cycles_error.clear();
     graph_greedy_warm_start_helper(0, false, 0, spectrum_sort, assigned, connectable, connections, direct_edges, assignment, 0.0, xassign, lassign, uassign);
 
 
