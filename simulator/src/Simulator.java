@@ -97,6 +97,7 @@ public class Simulator{
      */
     private boolean generateTheoreticalSpectrum(String outF, boolean forceUniq){
 	HashSet<BigDecimal> spectraHash = null;
+	this.theoSpectrum = new ArrayList<Peptide>();
 	if(forceUniq)
 	    spectraHash = new HashSet<BigDecimal>();
 
