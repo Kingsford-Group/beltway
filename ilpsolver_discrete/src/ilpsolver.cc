@@ -60,7 +60,7 @@ int ilpsolver::solve()
 		//add_order_constraints();
 		//add_error_constraints();
 		add_error_constraints_mvars();
-		add_unique_map_constraints();
+		//add_unique_map_constraints();
 		//add_anchor();
 		//add_ordering_cutting_planes();
 		
@@ -825,7 +825,8 @@ int ilpsolver::print()
 				for(int i=0;i<=u;i++) w += aa_mass[xassign[i]];
 			}
 		}else w = wassign[i];
-		double e = eassign[i];
+		double e = -10;
+        //if(eassign.size()>i) e = eassign[i];
 		printf("spectrum %d with mass %.3lf is assigned to interval [%d, %d], with mass %.3lf and error %.3lf (actual %.3lf)\n", i, spectrum[i], l, u, w, e, (w-spectrum[i]));
 		
 		if(false && no_infinity_contraints){
@@ -1099,13 +1100,13 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
     
     double equal_precision = 0.0001;
     
-    if((best_total_error != -1 && best_total_error < total_error) || best_total_error == 0){
+    if((best_total_error != -1 && best_total_error < (total_error - equal_precision)) || best_total_error == 0){
         return total_error;
     }
 
     if(sp == spectrum_sort.size()){
         printf("Total Error: %.0lf\tBest Error: %.0lf\n",total_error,best_total_error);
-        if(total_error < best_total_error || best_total_error == -1){
+        if(total_error < (best_total_error - equal_precision) || best_total_error == -1){
             best_total_error = total_error;
             xassign = my_xassign;
             lassign = my_lassign;
@@ -1120,6 +1121,7 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
      if(!complete && edges==slots-1 && assigned.size() == slots){
         complete = true;
         
+        //printf("Completed with assigned.size() = %d\tuassign.size() = %d\tlassign.size() = %d\n",assigned.size(),uassign.size(),lassign.size());
         int min_x_index = aa_mass.size();
         int min_x_slot = -1;
         for(int i=0;i<xassign.size();i++){
@@ -1130,13 +1132,20 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
             }
         }
         
-        /*for(int i=0; i<assigned.size(); i++){
+        for(int i=0; i<assigned.size(); i++){
             for(int j=0; j<assigned.size(); j++){
+                if(min_x_slot == i && min_x_slot == j) printf("*");
                 printf("%.0lf (%d)\t",connections[i][j],direct_edges[i][j]);
             }
             printf("\n");
-        }*/
+        }
 
+        printf("Connectable: ");
+        for(int i=0; i<connectable.size(); i++){
+            printf("%d\t",connectable[i]);
+        }
+        printf("\n");
+        
         vector<int> new_assignment;
         int i=min_x_slot;
         int i_prev = -1;
@@ -1152,7 +1161,7 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
                     found_new_j = true;
                     break;
                 }
-                if(i!=j && connectable[i] == 1 && connectable[j]==1){
+                if(j!=i_prev && i!=j && connectable[i] == 1 && connectable[j]==1){
                     new_assignment.push_back(j);
                     i_prev = i;
                     i = j;
@@ -1161,24 +1170,30 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
                 }
             }
             assert(found_new_j);
+            printf("New Assignment %d -> %d\n",new_assignment[new_assignment.size()-1],new_assignment.size()-1);
         }
         
-        for(int i=0;i<uassign.size();i++){
-            if(uassign[i] != -1){
+        for(int i=0;i<my_uassign.size();i++){
+            if(my_uassign[i] != -1){
                 int k = -1;
                 for(int j=0;j<new_assignment.size();j++){
-                    if(uassign[i] == new_assignment[j]) k = j;
+                    if(my_uassign[i] == new_assignment[j]) k = j;
                 }
-                uassign[i] = k;
+                printf("Shifting uassign[%d]: %d->%d\n",i,my_uassign[i],k);
+                assert(k!=-1);
+                my_uassign[i] = k;
             }
         }
-        for(int i=0;i<lassign.size();i++){
-            if(lassign[i] != -1){
+        for(int i=0;i<my_lassign.size();i++){
+        
+            if(my_lassign[i] != -1){
                 int k = -1;
                 for(int j=0;j<new_assignment.size();j++){
-                    if(lassign[i] == new_assignment[j]) k = j;
+                    if(my_lassign[i] == new_assignment[j]) k = j;
                 }
-                lassign[i] = k;
+                printf("Shifting lassign[%d]: %d->%d\n",i,my_uassign[i],k);
+                assert(k!=-1);
+                my_lassign[i] = k;
             }
         }
         
@@ -1229,6 +1244,22 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
             }
             printf("\n");
         }*/
+        
+        
+        for(int i=0;i<my_lassign.size();i++){
+            if(my_lassign[i] != -1 && my_uassign[i] != -1){
+                if(abs(connections[my_lassign[i]][my_lassign[i]] - spectrum[i]) > abs(connections[my_uassign[i]][my_lassign[i]] - spectrum[i])){
+                    int temp = my_lassign[i];
+                    my_lassign[i] = my_uassign[i];
+                    my_uassign[i] = temp;
+                }
+                printf("Shifted assign[%d]: %d,%d\n",i,my_lassign[i],my_uassign[i]);
+            }else if(my_lassign[i] != -1 || my_uassign[i] != -1){
+                printf("Assigned only 1!! assign[%d]: %d,%d\n",i,my_lassign[i],my_uassign[i]); 
+                exit(20);
+            }
+        }
+        
     }
     
     
@@ -1366,10 +1397,12 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
         (min_range_dist <= (new_aa_edge_dist + equal_precision)  || new_aa_edge_dist == -1)){
         //for(int s=0;s<min_range_j.size();s++){
         for(int s=0;s<=0;s++){
+            assert(min_range_i[s] != -1);
+            
             vector<int> pass_lassign = my_lassign;
             vector<int> pass_uassign = my_uassign;
-            pass_uassign[p] = min_range_i[s]; 
-            pass_lassign[p] = min_range_j[s];
+            pass_lassign[p] = min_range_i[s]; 
+            pass_uassign[p] = min_range_j[s];
         
             graph_greedy_warm_start_helper(edges,complete,sp+1,spectrum_sort,assigned,connectable,connections,direct_edges,assignment,total_error+min_range_dist,my_xassign,pass_lassign,pass_uassign);
         }
@@ -1380,6 +1413,12 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
         (min_new_edge_dist <= (new_aa_edge_dist + equal_precision)  || new_aa_edge_dist == -1)){
         
         for(int s=0;s<min_new_edge_i.size();s++){
+            assert(min_new_edge_i[s] != -1);
+            assert(min_new_edge_j[s] != -1);
+            assert(min_new_edge_k[s] != -1);
+            assert(min_new_edge_l[s] != -1);
+            
+            
             vector<int> pass_lassign = my_lassign;
             vector<int> pass_uassign = my_uassign;
             vector<int> pass_connectable = connectable;
@@ -1387,7 +1426,7 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
             vector< vector<int> > pass_direct_edges = direct_edges;
         
             pass_uassign[p] = min_new_edge_i[s]; 
-            pass_lassign[p] = min_new_edge_i[s];
+            pass_lassign[p] = min_new_edge_j[s];
         
             pass_connectable[min_new_edge_k[s]]--;
             pass_connectable[min_new_edge_l[s]]--;
@@ -1426,6 +1465,9 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
         (min_slot_dist <= (min_new_edge_dist + equal_precision)  || min_new_edge_dist == -1) &&
         (min_slot_dist <= (new_aa_edge_dist + equal_precision)  || new_aa_edge_dist == -1)){
         for(int s=0;s<min_slot_j.size();s++){
+            
+            assert(min_slot_j[s] != -1);
+            
             vector<int> pass_assigned = assigned;
             vector<int> pass_assignment = assignment;
             vector< vector <double> > pass_connections = connections;
@@ -1435,12 +1477,17 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
         
             pass_assigned.push_back(1);
             pass_assignment.push_back(min_slot_j[s]);
-        
+            
             int k = pass_assigned.size()-1;
             pass_connections[k][k] = aa_mass[min_slot_j[s]];
             pass_uassign[p] = k; 
             pass_lassign[p] = k;
             pass_xassign[k] = min_slot_j[s];
+            printf("pass_lassign: ");
+            for(int i=0;i<pass_lassign.size();i++){
+                printf("%d\t",pass_lassign[i]);
+            }
+            printf("\n");
     
             graph_greedy_warm_start_helper(edges,complete,sp+1,spectrum_sort,pass_assigned,connectable,pass_connections,direct_edges,pass_assignment,total_error+min_slot_dist,pass_xassign,pass_lassign,pass_uassign);
         }
@@ -1451,6 +1498,10 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
         (new_aa_edge_dist <= (min_range_dist + equal_precision)  || min_range_dist == -1)){
         
         for(int s=0;s<new_aa_edge_a.size();s++){
+            assert(new_aa_edge_i[s] != -1);
+            assert(new_aa_edge_j[s] != -1);
+            assert(new_aa_edge_a[s] != -1);
+        
             vector<int> pass_assigned = assigned;
             vector<int> pass_assignment = assignment;
             vector< vector <double> > pass_connections = connections;
@@ -1471,8 +1522,8 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
             pass_direct_edges[k][new_aa_edge_j[s]] = 1;
             pass_direct_edges[new_aa_edge_j[s]][k] = 1;
         
-            pass_uassign[p] = new_aa_edge_i[s]; 
-            pass_lassign[p] = k;
+            pass_lassign[p] = new_aa_edge_i[s]; 
+            pass_uassign[p] = k;
         
             pass_xassign[k] = new_aa_edge_a[s];
         
@@ -1561,7 +1612,7 @@ int ilpsolver::graph_greedy_warm_start(){
 	    lassign[p] = (lassign[p]+min_x_slot)%slots;
         uassign[p] = (uassign[p]+min_x_slot)%slots;
 	}
-	uassign.clear();
-	lassign.clear();
+	//uassign.clear();
+	//lassign.clear();
 	
 }
