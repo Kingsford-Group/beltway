@@ -1243,7 +1243,7 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
             double dist = abs((aa_mass[j] - spectrum_sort[sp][0]));
             
             if(min_slot_dist >= (dist - equal_precision)){
-                if(min_slot_dist > (dist - equal_precision)){
+                if(min_slot_dist > (dist + equal_precision)){
                     min_slot_j.clear();
                     min_slot_dist = dist;
                 }
@@ -1285,7 +1285,7 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
                 if(connections[i][j]!=-1){
                     double dist = abs(connections[i][j] - spectrum_sort[sp][0]);
                     if(min_range_dist >= (dist - equal_precision) || min_range_dist == -1){
-                        if(min_range_dist > (dist  - equal_precision) || min_range_dist == -1){
+                        if(min_range_dist > (dist + equal_precision) || min_range_dist == -1){
                             min_range_dist = dist;
                             min_range_i.clear();
                             min_range_j.clear();
@@ -1306,7 +1306,7 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
                             if(connections[i][k] != -1 && connections[l][j] != -1 && connectable[k]>0 && connectable[l]>0 && connections[k][l] == -1 && connections[i][j]==-1){
                                 double dist = abs(connections[i][k] + connections[l][j] - spectrum_sort[sp][0]);
                                 if(min_new_edge_dist >= (dist - equal_precision) || min_new_edge_dist == -1){
-                                    if(min_new_edge_dist > (dist - equal_precision) || min_new_edge_dist == -1){
+                                    if(min_new_edge_dist > (dist + equal_precision) || min_new_edge_dist == -1){
                                         min_new_edge_dist = dist;
                                             min_new_edge_i.clear();
                                             min_new_edge_j.clear();
@@ -1331,7 +1331,7 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
                                 double dist = abs(aa_mass[k] + connections[i][j] - spectrum_sort[sp][0]);
                                 //printf("new_aa_edge_dist: %.0lf\tk: %d\ti: %d\tj: %d\tdist: %.0lf\n",new_aa_edge_dist,k,i,j,dist);
                                 if(new_aa_edge_dist >= (dist - equal_precision) || new_aa_edge_dist == -1){
-                                    if(new_aa_edge_dist > (dist - equal_precision) || new_aa_edge_dist == -1){
+                                    if(new_aa_edge_dist > (dist + equal_precision) || new_aa_edge_dist == -1){
                                         new_aa_edge_dist = dist;                                
                                         new_aa_edge_a.clear();
                                         new_aa_edge_i.clear();
