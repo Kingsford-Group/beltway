@@ -1230,20 +1230,28 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
             sum += connections[i][i];
         }
         
-        for(int i=0;i<assigned.size();i++){
-            for(int j=i+1;j<assigned.size();j++){
-                int in_sum = 0;
+        for(int i=0;i<slots;i++){
+            double sum = 0;
+            for(int k=0;k<slots;k++){
+                int j = (i+k) % slots;
+                sum += aa_mass[my_xassign[j]];
+                connections[i][j] = sum;
+                
+            //for(int j=i;j<slots;j++){
+                /*int in_sum = 0;
                 for(int k=i;k<=j;k++) in_sum += aa_mass[my_xassign[k]];
                 connections[i][j] = in_sum;
-                connections[j][i] = sum - in_sum + aa_mass[my_xassign[i]] + aa_mass[my_xassign[j]];
+                if(i!=j) connections[j][i] = sum - in_sum + aa_mass[my_xassign[i]] + aa_mass[my_xassign[j]];*/
+                
             }
         }
-        /*for(int i=0; i<assigned.size(); i++){
-            for(int j=0; j<assigned.size(); j++){
+        printf("After Recalc:\n");
+        for(int i=0; i<slots; i++){
+            for(int j=0; j<slots; j++){
                 printf("%.0lf (%d)\t",connections[i][j],direct_edges[i][j]);
             }
             printf("\n");
-        }*/
+        }
         
         
         for(int i=0;i<my_lassign.size();i++){
