@@ -102,6 +102,7 @@ private:
     double graph_greedy_warm_start_helper(int edges, bool complete, int sp, vector< vector<double> > spectrum_sort, vector<int> assigned, vector<int> connectable, vector< vector <double> > connections, vector< vector<int> > direct_edges, vector<int> assignment, double total_error, vector<int> my_xassign, vector<int> my_lassign, vector<int> my_uassign);
     double best_total_error;
     
+    int print_relaxed();
 
 	// cutting planes (extra constraints)
 	int add_ordering_cutting_planes();

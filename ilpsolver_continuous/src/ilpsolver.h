@@ -30,6 +30,7 @@ public:
 	vector<GRBVar> yvars;		// amino acid variables
 	vector< vector<GRBVar> > lvars;		// lower endpoints variables
 	vector< vector<GRBVar> > uvars;		// upper endpoints variables
+	vector< vector< vector<GRBVar> > > mvars;		// upper endpoints variables
 	vector< vector<GRBVar> > rvars;		// range variables
 	vector<GRBVar> evars;				// error variables
 
@@ -56,6 +57,7 @@ private:
 	int add_upper_endpoints_variables();
 	int add_range_variables();
 	int add_error_variables();
+	int add_range_map_variables();
 
 	// add constraints
 	int add_distance_constraints();
@@ -63,6 +65,7 @@ private:
 	int add_upper_endpoints_constraints();
 	int add_range_constraints();
 	int add_error_constraints();
+	int add_range_map_constraints();
 
 	// set objective
 	int set_objective();

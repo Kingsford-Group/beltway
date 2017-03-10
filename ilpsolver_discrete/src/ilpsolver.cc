@@ -52,17 +52,17 @@ int ilpsolver::solve()
 			add_set_map_ubound_constraints();
 			add_set_map_constraints();
 			add_set_acid_map_constraints();
-			add_set_location_map_ubound_constraints();
-			add_set_location_map_lbound_constraints();
+			//add_set_location_map_ubound_constraints();
+			//add_set_location_map_lbound_constraints();
 		}else{
 			add_range_constraints();
 		}
-		//add_order_constraints();
+		add_order_constraints();
 		//add_error_constraints();
 		add_error_constraints_mvars();
-		//add_unique_map_constraints();
+		add_unique_map_constraints();
 		//add_anchor();
-		//add_ordering_cutting_planes();
+		add_ordering_cutting_planes();
 		
 		set_objective();
 
@@ -82,6 +82,7 @@ int ilpsolver::solve()
 
 		model->optimize();
 
+		//if(!lp_relax) 
 		collect_results();
 	}
 	catch(GRBException &e)
@@ -175,7 +176,7 @@ int ilpsolver::add_amino_acid_variables()
 		{
 		    stringstream s;
             s << "X_" << i << "_" << k;
-			GRBVar var = model->addVar(0, 1, 0, GRB_BINARY, s.str());
+			GRBVar var = model->addVar(0, 1, 0, ((lp_relax)?GRB_CONTINUOUS:GRB_BINARY), s.str());
 			xvars[i].push_back(var);
 		}
 	}
@@ -193,7 +194,7 @@ int ilpsolver::add_lower_endpoints_variables()
 		{
 		    stringstream s;
             s << "L_" << i << "_" << k;
-			GRBVar var = model->addVar(0, 1, 0, GRB_BINARY, s.str());
+			GRBVar var = model->addVar(0, 1, 0, ((lp_relax)?GRB_CONTINUOUS:GRB_BINARY), s.str());
 			lvars[i].push_back(var);
 		}
 	}
@@ -211,7 +212,7 @@ int ilpsolver::add_upper_endpoints_variables()
 		{
 		    stringstream s;
             s << "L_" << i << "_" << k;
-			GRBVar var = model->addVar(0, 1, 0, GRB_BINARY, s.str());
+			GRBVar var = model->addVar(0, 1, 0, ((lp_relax)?GRB_CONTINUOUS:GRB_BINARY), s.str());
 			uvars[i].push_back(var);
 		}
 	}
@@ -226,7 +227,7 @@ int ilpsolver::add_set_map_variables(){
 		for(int p=0; p<spectrum.size();p++){
 		    stringstream s;
             s << "O_" << i << "_" << p;
-			GRBVar var = model->addVar(0,1,0,GRB_BINARY, s.str());
+			GRBVar var = model->addVar(0,1,0,((lp_relax)?GRB_CONTINUOUS:GRB_BINARY), s.str());
 			ovars[i].push_back(var);
 		}
 	}
@@ -244,7 +245,7 @@ int ilpsolver::add_range_map_variables(){
 			for(int p=0;p<spectrum.size();p++){
 			    stringstream s;
                 s << "M_" << i << "_" << j << "_" << p;
-				GRBVar var = model->addVar(0,1,0,GRB_BINARY, s.str());
+				GRBVar var = model->addVar(0,1,0,((lp_relax)?GRB_CONTINUOUS:GRB_BINARY), s.str());
 				mvars[i][j].push_back(var);
 			}
 		}
@@ -262,7 +263,7 @@ int ilpsolver::add_set_acid_map_variables(){
 			for(int p=0;p<spectrum.size();p++){
 			    stringstream s;
                 s << "S_" << i << "_" << j << "_" << p;
-				GRBVar var = model->addVar(0,1,0,GRB_BINARY, s.str());
+				GRBVar var = model->addVar(0,1,0,((lp_relax)?GRB_CONTINUOUS:GRB_BINARY), s.str());
 				svars[i][j].push_back(var);
 			}
 		}
@@ -413,6 +414,17 @@ int ilpsolver::add_set_location_map_ubound_constraints(){
                         }
                 }
         }
+        for(int i=0;i<slots;i++){
+            for(int p=0;p<spectrum.size();p++){
+                GRBLinExpr expr;
+                for(int j=0;j<aa_list.size();j++){
+                    expr += svars[i][j][p];
+                }
+                model->addConstr(expr, GRB_EQUAL, ovars[i][p]);
+            }
+        }
+        
+        
         return 0;
 }
 
@@ -690,11 +702,19 @@ int ilpsolver::collect_results()
 	for(int i = 0; i < slots; i++)
 	{
 		int k = -1;
+		double k_v = -1;
 		for(int j = 0; j < aa_list.size(); j++)
 		{
-			if(xvars[i][j].get(GRB_DoubleAttr_X) <= 0.5) continue;
-			assert(k == -1);
-			k = j;
+			if(lp_relax){
+                if(xvars[i][j].get(GRB_DoubleAttr_X) > k_v || k==-1){
+                    k = j;
+                    k_v = xvars[i][j].get(GRB_DoubleAttr_X);
+                }
+			}else{
+                if(xvars[i][j].get(GRB_DoubleAttr_X) <= 0.5) continue;
+                assert(k == -1);
+                k = j;
+			}
 		}
 		assert(k >= 0);
 		xassign.push_back(k);
@@ -749,13 +769,22 @@ int ilpsolver::collect_results()
 	for(int p = 0; p < spectrum.size(); p++){
 	    int ks = -1;
 	    int ls = -1;
+	    double vs = -1;
 	    for(int k = 0; k < slots; k++){
 			for(int l = 0; l < slots; l++){
-                if(mvars[k][l][p].get(GRB_DoubleAttr_X) <= 0.5) continue;
-                assert(ks == -1);
-                assert(ls == -1);
-                ks = k;
-                ls = l;
+                if(lp_relax){
+                    if(mvars[k][l][p].get(GRB_DoubleAttr_X) > vs){
+                        vs = mvars[k][l][p].get(GRB_DoubleAttr_X);
+                        ks = k;
+                        ls = l;
+                    }
+                }else{
+                    if(mvars[k][l][p].get(GRB_DoubleAttr_X) <= 0.5) continue;
+                    assert(ks == -1);
+                    assert(ls == -1);
+                    ks = k;
+                    ls = l;
+                }
             }
         }
         lassign.push_back(ks);
@@ -785,8 +814,56 @@ int ilpsolver::collect_results()
 	return 0;
 }
 
+int ilpsolver::print_relaxed(){
+
+    vector<double> slot_assign;
+    slot_assign.clear();
+	for(int i = 0; i < slots; i++)
+	{
+	    double sum = 0.0;
+		for(int j = 0; j < aa_list.size(); j++)
+		{
+			double k = xvars[i][j].get(GRB_DoubleAttr_X);
+			if(k > 0){
+			    sum += (k * aa_mass[j]);
+			    //printf("X[%d][%d] = %.4lf\n",i,j,k);
+			    printf("slot %d is assigned amino acid %d (%.2lf%%): %s -> %.3lf\n", i, j, k, aa_list[j].c_str(), aa_mass[j]);
+			}
+		}
+		printf("slot %d assigned total weight of %.3lf\n", i, sum);
+		slot_assign.push_back(sum);
+	}
+
+    for(int i = 0; i < spectrum.size(); i++){
+        if(no_infinity_contraints){
+            for(int k = 0; k < slots; k++){
+                for(int l = 0; l < slots; l++){
+                    //printf("(k,l,i) = (%d,%d,%d)\n",k,l,i);
+                    double v = mvars[k][l][i].get(GRB_DoubleAttr_X);
+                    double w = 0;
+                    if(v>0){  
+                        if(k<=l){
+                            for(int m=k;m<=l;m++) w += slot_assign[m];
+                        }else{
+                            for(int m=k;m<slots;m++) w += slot_assign[m];
+                            for(int m=0;m<=l;m++) w += slot_assign[m];
+                        }
+                        double e = evars[i].get(GRB_DoubleAttr_X);
+                        printf("spectrum %d with mass %.3lf is assigned to interval [%d, %d], with mass %.3lf and weight %.3lf (actual %.3lf)\n", i, spectrum[i], k, l, w, v, (v*abs(w-spectrum[i])));
+                    }
+                }
+            }
+        }
+        
+    }
+
+    return 0;
+}
+
 int ilpsolver::print()
 {
+	
+	//if(lp_relax) return print_relaxed();
 	/*
 	for(MSD::iterator it = aa2m.begin(); it != aa2m.end(); it++)
 	{
@@ -1170,7 +1247,7 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
                 }
             }
             assert(found_new_j);
-            printf("New Assignment %d -> %d\n",new_assignment[new_assignment.size()-1],new_assignment.size()-1);
+            //printf("New Assignment %d -> %d\n",new_assignment[new_assignment.size()-1],new_assignment.size()-1);
         }
         
         for(int i=0;i<my_uassign.size();i++){

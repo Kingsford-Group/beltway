@@ -6,6 +6,7 @@ double ilp_time_limit = 600;
 bool no_infinity_contraints = false;
 bool no_priming_contraints = false;
 double max_error_allowed = -1;
+bool lp_relax = false;
 
 int parse_arguments(int argc, const char ** argv)
 {
@@ -28,6 +29,9 @@ int parse_arguments(int argc, const char ** argv)
         {
             max_error_allowed = atof(argv[i + 1]);
             i++;
+        }
+        else if(string(argv[i]) == "-lp_relaxation"){
+            lp_relax = true;
         }
 	}
 	return 0;
