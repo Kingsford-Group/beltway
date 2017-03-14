@@ -187,6 +187,7 @@ int ilpsolver::add_range_map_variables(){
                 s << "M_" << i << "_" << j << "_" << p;
                 //printf("Generating M_%d_%d_%d\n",i,j,p);
 				GRBVar var = model->addVar(0,1,0,GRB_BINARY, s.str());
+				//GRBVar var = model->addVar(0,1,0,GRB_CONTINUOUS, s.str());
 				mvars[i][j].push_back(var);
 			}
 		}
@@ -304,6 +305,7 @@ int ilpsolver::add_error_constraints()
 			}
 		}
 	}
+	
 	return 0;
 }
 
@@ -311,6 +313,7 @@ int ilpsolver::set_objective()
 {
 	GRBLinExpr expr;
 	for(int i = 0; i < evars.size(); i++) expr += evars.at(i);
+
 	model->setObjective(expr, GRB_MINIMIZE);
 	return 0;
 }

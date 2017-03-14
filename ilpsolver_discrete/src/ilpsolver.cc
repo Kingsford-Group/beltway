@@ -57,12 +57,12 @@ int ilpsolver::solve()
 		}else{
 			add_range_constraints();
 		}
-		add_order_constraints();
+		//add_order_constraints();
 		//add_error_constraints();
 		add_error_constraints_mvars();
-		add_unique_map_constraints();
+		//add_unique_map_constraints();
 		//add_anchor();
-		add_ordering_cutting_planes();
+		//add_ordering_cutting_planes();
 		
 		set_objective();
 
@@ -903,7 +903,7 @@ int ilpsolver::print()
 			}
 		}else w = wassign[i];
 		double e = -10;
-        //if(eassign.size()>i) e = eassign[i];
+        if(eassign.size()>i) e = eassign[i];
 		printf("spectrum %d with mass %.3lf is assigned to interval [%d, %d], with mass %.3lf and error %.3lf (actual %.3lf)\n", i, spectrum[i], l, u, w, e, (w-spectrum[i]));
 		
 		if(false && no_infinity_contraints){
@@ -1178,7 +1178,7 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
     double equal_precision = 0.0001;
     
     if((best_total_error != -1 && best_total_error < (total_error - equal_precision)) || best_total_error == 0){
-        return total_error;
+        return best_total_error;
     }
 
     if(sp == spectrum_sort.size()){
@@ -1189,7 +1189,7 @@ double ilpsolver::graph_greedy_warm_start_helper(int edges, bool complete, int s
             lassign = my_lassign;
             uassign = my_uassign;
         }
-        return total_error;   
+        return best_total_error;   
     }
     
     int p = (int) spectrum_sort[sp][1];
