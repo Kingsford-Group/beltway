@@ -1,4 +1,4 @@
-<project name="Simulator" basedir=".">
+<project name="Simulator" basedir="." default="jar">
   
   <property environment="env"/>
   <property name="dir.src">src</property>
