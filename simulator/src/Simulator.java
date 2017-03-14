@@ -325,7 +325,11 @@ public class Simulator{
     private void sampleSpectrumSingle(double samplingRatio, ArrayList<Integer> indices, String filePrefix){
 	StringBuffer bf = new StringBuffer("#n = " + this.clen + "\n");
 	StringBuffer answerbf = new StringBuffer("#n = " + this.clen + "\n");
-	int ns = (int) Math.ceil(this.theoSpectrum.size() * samplingRatio);
+	int ns = this.theoSpectrum.size();
+	if(samplingRatio <= 1.0d)
+	    ns = (int) Math.ceil(this.theoSpectrum.size() * samplingRatio);
+	else if(samplingRatio < this.theoSpectrum.size())
+	    ns = this.theoSpectrum.size() - (int) samplingRatio;
 	Collections.shuffle(indices);
 	//int[] indices = rand.ints(ns, 0, this.theoSpectrum.size()).toArray();
 	
@@ -378,7 +382,8 @@ public class Simulator{
 	    System.err.println("\tl        [INT]  \tLength of cyclopeptide");	
 	    System.err.println("\tr        [INT]  \tNumber of simulations");
 	    System.err.println("\tf        [FLOAT]\tSampling ratio. How much of theoretical spectrum you "
-			       +"\n\t                \twant to sample. (0-1.0]");
+			       +"\n\t                \twant to sample. (0-1.0]. If the value provide is larger than 1"
+			       +"\n\t                \tthe total number sampled spectrum is equal to (#TheoSpectra - (int)f)");
 	    System.err.println("\tsf       [STR]  \tFilename for theoretical spectrum. If <cpepf> is given," 
 			       +"\n\t                \tthis is an input file containing theoretical spectrum."
 			       +"\n\t                \tIf <cpepf> is given and <sf> is NOT found, it will overwrite.");
