@@ -312,7 +312,7 @@ public class Simulator{
 	ArrayList<Integer> indices = new ArrayList<>();
 	for(int i=0;i<this.theoSpectrum.size();i++)
 	    indices.add(new Integer(i));
-	if(samplingRatio > 0 && samplingRatio <= 1){
+	if(samplingRatio > 0){// && samplingRatio <= 1){
 	    //Random rand = new Random();
 	    for(int i=0; i<r; i++)
 		this.sampleSpectrumSingle(samplingRatio, indices, expName + "_" + i);
