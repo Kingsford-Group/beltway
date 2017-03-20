@@ -8,6 +8,7 @@ extern bool no_infinity_contraints;
 extern double max_error_allowed;
 extern bool no_priming_contraints;
 extern bool lp_relax;
+extern bool use_mvars;
 int parse_arguments(int argc, const char ** argv);
 
 #endif

@@ -7,6 +7,7 @@ bool no_infinity_contraints = false;
 bool no_priming_contraints = false;
 double max_error_allowed = -1;
 bool lp_relax = false;
+bool use_mvars = true;
 
 int parse_arguments(int argc, const char ** argv)
 {
@@ -32,6 +33,12 @@ int parse_arguments(int argc, const char ** argv)
         }
         else if(string(argv[i]) == "-lp_relaxation"){
             lp_relax = true;
+        }
+        else if(string(argv[i]) == "-ulvars"){
+            use_mvars = false;
+        }
+        else if(string(argv[i]) == "-mvars"){
+            use_mvars = true;
         }
 	}
 	return 0;

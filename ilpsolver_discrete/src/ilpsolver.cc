@@ -9,6 +9,8 @@
 #include <algorithm>
 #include <cmath> 
 
+int less_than(vector<double> i, vector<double> j){ return (i[0]<j[0]);} 
+
 ilpsolver::ilpsolver(const string &alphabet_file, const string &spectrum_file)
 {
 	read_alphabet(alphabet_file);
@@ -32,9 +34,9 @@ int ilpsolver::solve()
 	try
 	{
 		add_amino_acid_variables();
-		add_range_map_variables();
-		//add_lower_endpoints_variables();
-		//add_upper_endpoints_variables();
+		if(use_mvars) add_range_map_variables();
+		if(!use_mvars) add_lower_endpoints_variables();
+		if(!use_mvars) add_upper_endpoints_variables();
 		if(no_infinity_contraints){
 			add_set_map_variables();
 			add_set_acid_map_variables();		
@@ -44,25 +46,29 @@ int ilpsolver::solve()
 		add_error_variables();
 		
 		add_amino_acid_constraints();
-		add_range_map_constraints();
-		//add_lower_endpoints_constraints();
-		//add_upper_endpoints_constraints();
+		if(use_mvars) add_range_map_constraints();
+		if(!use_mvars) add_lower_endpoints_constraints();
+		if(!use_mvars) add_upper_endpoints_constraints();
 		if(no_infinity_contraints){
 			add_set_map_lbound_constraints();
 			add_set_map_ubound_constraints();
 			add_set_map_constraints();
 			add_set_acid_map_constraints();
-			//add_set_location_map_ubound_constraints();
-			//add_set_location_map_lbound_constraints();
+			add_set_location_map_ubound_constraints();
+			add_set_location_map_lbound_constraints();
 		}else{
 			add_range_constraints();
 		}
-		//add_order_constraints();
-		//add_error_constraints();
-		add_error_constraints_mvars();
+		add_order_constraints();
+		if(!use_mvars) add_error_constraints();
+		if(use_mvars) add_error_constraints_mvars();
 		//add_unique_map_constraints();
-		//add_anchor();
+		add_anchor();
 		//add_ordering_cutting_planes();
+		
+		//if(lp_relax) 
+		add_m_linear_constraints();
+		//add_s_cutting_planes();
 		
 		set_objective();
 
@@ -152,6 +158,23 @@ int ilpsolver::read_spectrum(const string &file)
 	}
 
 	fin.close();
+	
+	/*vector< vector<double> > spectrum_sort;
+	spectrum_sort.clear();
+	spectrum_sort.resize(spectrum.size());
+	for(int p=0;p<spectrum.size();p++){
+	    spectrum_sort[p].push_back(spectrum[p]);
+	    spectrum_sort[p].push_back((double)p);
+	}
+	
+	std::sort (spectrum_sort.begin(), spectrum_sort.end(), less_than);
+	
+	for(int sp=0;sp<spectrum.size();sp++){
+	    int p = (int) spectrum_sort[sp][0];
+	    printf("sorted spectrum (%d) = (%lf,%lf)\n",p,spectrum_sort[sp][0],spectrum_sort[sp][1]);
+	    spectrum[sp] =p;
+	}
+	*/
 	return 0;
 }
 
@@ -211,7 +234,7 @@ int ilpsolver::add_upper_endpoints_variables()
 		for(int k = 0; k < slots; k++)
 		{
 		    stringstream s;
-            s << "L_" << i << "_" << k;
+            s << "U_" << i << "_" << k;
 			GRBVar var = model->addVar(0, 1, 0, ((lp_relax)?GRB_CONTINUOUS:GRB_BINARY), s.str());
 			uvars[i].push_back(var);
 		}
@@ -349,8 +372,9 @@ int ilpsolver::add_set_map_lbound_constraints(){
 	for(int k=0;k<slots;k++){
 		for(int l=0;l<slots;l++){
 			for(int p=0;p<spectrum.size();p++){
-				//GRBLinExpr expr = lvars[p][k] + uvars[p][l] - 1;
-				GRBLinExpr expr = mvars[k][l][p];
+			    GRBLinExpr expr;
+				if(!use_mvars) expr = lvars[p][k] + uvars[p][l] - 1;
+				else expr = mvars[k][l][p];
 				if(k<=l){
 					for(int i=k;i<=l;i++){
 						model->addConstr(ovars[i][p], GRB_GREATER_EQUAL, expr);
@@ -373,8 +397,9 @@ int ilpsolver::add_set_map_ubound_constraints(){
         for(int k=0;k<slots;k++){
                 for(int l=0;l<slots;l++){
                         for(int p=0;p<spectrum.size();p++){
-                                //GRBLinExpr expr = 2 - lvars[p][k] - uvars[p][l];
-                                GRBLinExpr expr = 1 - mvars[k][l][p];
+                                GRBLinExpr expr;
+                                if(!use_mvars)  expr = 2 - lvars[p][k] - uvars[p][l];
+                                else expr = 1 - mvars[k][l][p];
                                 if((l+1)%slots!=k){
 					if(l<k){
                                 	        for(int i=l+1;i<k;i++){
@@ -454,6 +479,19 @@ int ilpsolver::add_set_map_constraints(){
 	return 0;
 }
 
+int ilpsolver::add_s_cutting_planes(){
+	for(int p=0;p<spectrum.size();p++){
+		for(int i=0;i<slots;i++){
+			for(int j=0;j<aa_list.size();j++){
+			    GRBLinExpr expr = xvars[i][j] + ovars[i][p] - 1;
+				model->addConstr(svars[i][j][p], GRB_GREATER_EQUAL, expr);
+			}
+		}
+		
+	}
+	return 0;
+}
+
 int ilpsolver::add_range_map_constraints(){
     for(int p=0;p<spectrum.size();p++){
         GRBLinExpr expr;
@@ -464,6 +502,58 @@ int ilpsolver::add_range_map_constraints(){
         }
         model->addConstr(expr, GRB_EQUAL, 1);
     }
+}
+
+
+int ilpsolver::add_m_linear_constraints(){
+
+    for(int p=0;p<spectrum.size();p++){
+        for(int i=0;i<slots;i++){
+            GRBLinExpr expr;
+            for(int kp=0;kp<slots;kp++){
+                for(int lp=0;lp<slots;lp++){
+                    int k = (i - kp + slots) % slots;
+                    int l = (i + lp) % slots;
+                    expr += mvars[k][l][p];
+                }
+            }
+            model->addConstr(ovars[i][p], GRB_LESS_EQUAL, expr);
+            
+            GRBLinExpr expr2;
+            for(int kp=1;kp<slots-1;kp++){
+                int k = (i + kp) % slots;
+                for(int lp=0;lp<(slots-kp-1);lp++){
+                    int l = (k + lp) % slots;
+                    expr += mvars[k][l][p];
+                }
+            }
+            model->addConstr(ovars[i][p], GRB_GREATER_EQUAL, expr2);
+        }
+    }
+
+    /*for(int k=0;k<slots;k++){
+        for(int l=0;l<slots;l++){
+            for(int p=0;p<spectrum.size();p++){
+                GRBLinExpr expr = 1 - mvars[k][l][p];
+                if((l+1)%slots!=k){
+                    if(l<k){
+                        for(int i=l+1;i<k;i++){
+                            model->addConstr(ovars[i][p], GRB_LESS_EQUAL, expr);
+                        }
+                    }else{
+                        for(int i=l+1;i<slots;i++){
+                            model->addConstr(ovars[i][p], GRB_LESS_EQUAL, expr);
+                        }
+                        for(int i=0;i<k;i++){
+                            model->addConstr(ovars[i][p], GRB_LESS_EQUAL, expr);
+                        }
+                    }
+                }
+            }
+        }
+    }*/
+        
+    return 0;
 }
 
 int ilpsolver::add_range_constraints()
@@ -638,8 +728,9 @@ int ilpsolver::add_ordering_cutting_planes()
                                     if(k2 <= l2) bound = (l2 - k2 + 1) * max_weight;
                                     else bound = (l2 + 1 + slots - k2) * max_weight;
                                     GRBLinExpr expr1 = rvars[k1][l1] - rvars[k2][l2];   
-                                    //GRBLinExpr expr2 = (lvars[p1][k1] + uvars[p1][l1] + lvars[p2][k2] + uvars[p2][l2] - 4) * bound;
-                                    GRBLinExpr expr2 = (mvars[k1][l1][p1] + mvars[k2][l2][p2] - 2) * bound;
+                                    GRBLinExpr expr2;
+                                    if(!use_mvars) expr2 = (lvars[p1][k1] + uvars[p1][l1] + lvars[p2][k2] + uvars[p2][l2] - 4) * bound;
+                                    else expr2 = (mvars[k1][l1][p1] + mvars[k2][l2][p2] - 2) * bound;
                                     model->addConstr(expr1, GRB_GREATER_EQUAL, expr2);
                                 }
                                 else if(spectrum[p2] > spectrum[p1])
@@ -648,8 +739,9 @@ int ilpsolver::add_ordering_cutting_planes()
                                     if(k1 <= l1) bound = (l1 - k1 + 1) * max_weight;
                                     else bound = (l1 + 1 + slots - k1) * max_weight;
                                     GRBLinExpr expr1 = rvars[k2][l2] - rvars[k1][l1];
-                                    //GRBLinExpr expr2 = (lvars[p1][k1] + uvars[p1][l1] + lvars[p2][k2] + uvars[p2][l2] - 4) * bound;
-                                    GRBLinExpr expr2 = (mvars[k1][l1][p1] + mvars[k2][l2][p2] - 2) * bound;
+                                    GRBLinExpr expr2;
+                                    if(!use_mvars) expr2 = (lvars[p1][k1] + uvars[p1][l1] + lvars[p2][k2] + uvars[p2][l2] - 4) * bound;
+                                    else expr2 = (mvars[k1][l1][p1] + mvars[k2][l2][p2] - 2) * bound;
                                     model->addConstr(expr1, GRB_GREATER_EQUAL, expr2);
                                 }
                             }
@@ -690,8 +782,19 @@ int ilpsolver::add_unique_map_constraints(){
 
 int ilpsolver::set_objective()
 {
-	GRBLinExpr expr;
+	GRBQuadExpr expr;
 	for(int i = 0; i < evars.size(); i++) expr += evars.at(i);
+	
+	if(lp_relax){
+	    for(int p = 0; p < spectrum.size(); p++){
+			for(int j = 0; j < aa_list.size(); j++){
+				for(int i = 0; i < slots; i++){
+				    //expr -=  svars[i][j][p]*svars[i][j][p] - svars[i][j][p];
+				}
+			}
+		}
+	}
+	
 	model->setObjective(expr, GRB_MINIMIZE);
 	return 0;
 }
@@ -737,60 +840,62 @@ int ilpsolver::collect_results()
 	}
 
 	lassign.clear();
-	/*
-	for(int p = 0; p < spectrum.size(); p++)
-	{
-		int k = -1;
-		for(int j = 0; j < slots; j++)
-		{
-			if(lvars[p][j].get(GRB_DoubleAttr_X) <= 0.5) continue;
-			assert(k == -1);
-			k = j;
-		}
-		assert(k >= 0);
-		lassign.push_back(k);
-	}*/
-
-	uassign.clear();
-	/*
-	for(int p = 0; p < spectrum.size(); p++)
-	{
-		int k = -1;
-		for(int j = 0; j < slots; j++)
-		{
-			if(uvars[p][j].get(GRB_DoubleAttr_X) <= 0.5) continue;
-			assert(k == -1);
-			k = j;
-		}
-		assert(k >= 0);
-		uassign.push_back(k);
-	}*/
 	massign.clear();
-	for(int p = 0; p < spectrum.size(); p++){
-	    int ks = -1;
-	    int ls = -1;
-	    double vs = -1;
-	    for(int k = 0; k < slots; k++){
-			for(int l = 0; l < slots; l++){
-                if(lp_relax){
-                    if(mvars[k][l][p].get(GRB_DoubleAttr_X) > vs){
-                        vs = mvars[k][l][p].get(GRB_DoubleAttr_X);
+    uassign.clear();
+    
+	if(!use_mvars){
+        for(int p = 0; p < spectrum.size(); p++)
+        {
+            int k = -1;
+            for(int j = 0; j < slots; j++)
+            {
+                if(lvars[p][j].get(GRB_DoubleAttr_X) <= 0.5) continue;
+                assert(k == -1);
+                k = j;
+            }
+            assert(k >= 0);
+            lassign.push_back(k);
+        }
+        
+        for(int p = 0; p < spectrum.size(); p++)
+        {
+            int k = -1;
+            for(int j = 0; j < slots; j++)
+            {
+                if(uvars[p][j].get(GRB_DoubleAttr_X) <= 0.5) continue;
+                assert(k == -1);
+                k = j;
+            }
+            assert(k >= 0);
+            uassign.push_back(k);
+        }
+    }else{
+	    for(int p = 0; p < spectrum.size(); p++){
+            int ks = -1;
+            int ls = -1;
+            double vs = -1;
+            for(int k = 0; k < slots; k++){
+                for(int l = 0; l < slots; l++){
+                    if(lp_relax){
+                        if(mvars[k][l][p].get(GRB_DoubleAttr_X) > vs){
+                            vs = mvars[k][l][p].get(GRB_DoubleAttr_X);
+                            ks = k;
+                            ls = l;
+                        }
+                    }else{
+                        if(mvars[k][l][p].get(GRB_DoubleAttr_X) <= 0.5) continue;
+                        assert(ks == -1);
+                        assert(ls == -1);
                         ks = k;
                         ls = l;
                     }
-                }else{
-                    if(mvars[k][l][p].get(GRB_DoubleAttr_X) <= 0.5) continue;
-                    assert(ks == -1);
-                    assert(ls == -1);
-                    ks = k;
-                    ls = l;
                 }
             }
+            lassign.push_back(ks);
+            uassign.push_back(ls);
         }
-        lassign.push_back(ks);
-        uassign.push_back(ls);
-	}
-
+    }
+    
 	if(!no_infinity_contraints){
 		wassign.clear();
 		for(int p = 0; p < spectrum.size(); p++)
@@ -983,7 +1088,7 @@ int ilpsolver::reset(){
 	model = new GRBModel(*env);
 }
 
-int less_than(vector<double> i, vector<double> j){ return (i[0]<j[0]);} 
+
 
 int ilpsolver::greedy_warm_start(){
     
@@ -1699,5 +1804,6 @@ int ilpsolver::graph_greedy_warm_start(){
 	}
 	//uassign.clear();
 	//lassign.clear();
+	return best_total_error;
 	
 }

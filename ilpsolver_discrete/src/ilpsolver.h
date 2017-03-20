@@ -96,6 +96,9 @@ private:
         int add_anchor();
         int add_unique_map_constraints();
         
+        int add_m_linear_constraints();
+        int add_s_cutting_planes();
+        
     //warm start
     int set_mvars();
     int set_xvars();

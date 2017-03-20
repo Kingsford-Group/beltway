@@ -41,7 +41,7 @@ int main(int argc, const char ** argv)
 		
 		//sv.spectrum = slice(sv.spectrum,0,sv.spectrum.size()/2);
 		
-		for(int i=sv.slots;i<spectrum_save.size();i+=sv.slots/2){
+		for(int i=sv.slots/2;i<spectrum_save.size();i+=sv.slots/2){
             sv.spectrum = slice(spectrum_save,0,i);
         
             sv.solve();
@@ -54,7 +54,7 @@ int main(int argc, const char ** argv)
 		//sv.greedy_warm_start();
 		double best_error = -1;
 		if(!no_priming_contraints) best_error = sv.graph_greedy_warm_start();
-		
+		printf("Best Error At End: %.3lf\n",best_error);
 		if(best_error == -1 || best_error > 0.001) sv.solve();
         sv.write(argv[3]);
         sv.print();
