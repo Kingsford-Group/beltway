@@ -19,7 +19,7 @@ while(<GFILE>){
 }
 
 our @solution;
-open SFILE, $solution_fname or die("$given_fname: $!\n");
+open SFILE, $solution_fname or die("$solution_fname: $!\n");
 while(<SFILE>){
         chomp $_;
         my @spl = split(/\-/,$_);

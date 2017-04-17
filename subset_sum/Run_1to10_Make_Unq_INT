@@ -1,0 +1,578 @@
+all: ../simulator/data/int_uniqWeights_simul2/cycloLen5_0_25_25.subset_sum.out ../simulator/data/int_uniqWeights_simul3/cycloLen5_0_25_25.subset_sum.out ../simulator/data/int_uniqWeights_simul4/cycloLen5_0_25_25.subset_sum.out ../simulator/data/int_uniqWeights_simul5/cycloLen5_0_25_25.subset_sum.out ../simulator/data/int_uniqWeights_simul6/cycloLen5_0_25_25.subset_sum.out ../simulator/data/int_uniqWeights_simul7/cycloLen5_0_25_25.subset_sum.out ../simulator/data/int_uniqWeights_simul8/cycloLen5_0_25_25.subset_sum.out ../simulator/data/int_uniqWeights_simul9/cycloLen5_0_25_25.subset_sum.out ../simulator/data/int_uniqWeights_simul10/cycloLen5_0_25_25.subset_sum.out ../simulator/data/int_uniqWeights_simul2/cycloLen6_0_36_36.subset_sum.out ../simulator/data/int_uniqWeights_simul3/cycloLen6_0_36_36.subset_sum.out ../simulator/data/int_uniqWeights_simul4/cycloLen6_0_36_36.subset_sum.out ../simulator/data/int_uniqWeights_simul5/cycloLen6_0_36_36.subset_sum.out ../simulator/data/int_uniqWeights_simul6/cycloLen6_0_36_36.subset_sum.out ../simulator/data/int_uniqWeights_simul7/cycloLen6_0_36_36.subset_sum.out ../simulator/data/int_uniqWeights_simul8/cycloLen6_0_36_36.subset_sum.out ../simulator/data/int_uniqWeights_simul9/cycloLen6_0_36_36.subset_sum.out ../simulator/data/int_uniqWeights_simul10/cycloLen6_0_36_36.subset_sum.out ../simulator/data/int_uniqWeights_simul2/cycloLen7_0_49_49.subset_sum.out ../simulator/data/int_uniqWeights_simul3/cycloLen7_0_49_49.subset_sum.out ../simulator/data/int_uniqWeights_simul4/cycloLen7_0_49_49.subset_sum.out ../simulator/data/int_uniqWeights_simul5/cycloLen7_0_49_49.subset_sum.out ../simulator/data/int_uniqWeights_simul6/cycloLen7_0_49_49.subset_sum.out ../simulator/data/int_uniqWeights_simul7/cycloLen7_0_49_49.subset_sum.out ../simulator/data/int_uniqWeights_simul8/cycloLen7_0_49_49.subset_sum.out ../simulator/data/int_uniqWeights_simul9/cycloLen7_0_49_49.subset_sum.out ../simulator/data/int_uniqWeights_simul10/cycloLen7_0_49_49.subset_sum.out ../simulator/data/int_uniqWeights_simul2/cycloLen8_0_64_64.subset_sum.out ../simulator/data/int_uniqWeights_simul3/cycloLen8_0_64_64.subset_sum.out ../simulator/data/int_uniqWeights_simul4/cycloLen8_0_64_64.subset_sum.out ../simulator/data/int_uniqWeights_simul5/cycloLen8_0_64_64.subset_sum.out ../simulator/data/int_uniqWeights_simul6/cycloLen8_0_64_64.subset_sum.out ../simulator/data/int_uniqWeights_simul7/cycloLen8_0_64_64.subset_sum.out ../simulator/data/int_uniqWeights_simul8/cycloLen8_0_64_64.subset_sum.out ../simulator/data/int_uniqWeights_simul9/cycloLen8_0_64_64.subset_sum.out ../simulator/data/int_uniqWeights_simul10/cycloLen8_0_64_64.subset_sum.out ../simulator/data/int_uniqWeights_simul2/cycloLen9_0_81_81.subset_sum.out ../simulator/data/int_uniqWeights_simul3/cycloLen9_0_81_81.subset_sum.out ../simulator/data/int_uniqWeights_simul4/cycloLen9_0_81_81.subset_sum.out ../simulator/data/int_uniqWeights_simul5/cycloLen9_0_81_81.subset_sum.out ../simulator/data/int_uniqWeights_simul6/cycloLen9_0_81_81.subset_sum.out ../simulator/data/int_uniqWeights_simul7/cycloLen9_0_81_81.subset_sum.out ../simulator/data/int_uniqWeights_simul8/cycloLen9_0_81_81.subset_sum.out ../simulator/data/int_uniqWeights_simul9/cycloLen9_0_81_81.subset_sum.out ../simulator/data/int_uniqWeights_simul10/cycloLen9_0_81_81.subset_sum.out ../simulator/data/int_uniqWeights_simul2/cycloLen10_0_100_100.subset_sum.out ../simulator/data/int_uniqWeights_simul3/cycloLen10_0_100_100.subset_sum.out ../simulator/data/int_uniqWeights_simul4/cycloLen10_0_100_100.subset_sum.out ../simulator/data/int_uniqWeights_simul5/cycloLen10_0_100_100.subset_sum.out ../simulator/data/int_uniqWeights_simul6/cycloLen10_0_100_100.subset_sum.out ../simulator/data/int_uniqWeights_simul7/cycloLen10_0_100_100.subset_sum.out ../simulator/data/int_uniqWeights_simul8/cycloLen10_0_100_100.subset_sum.out ../simulator/data/int_uniqWeights_simul9/cycloLen10_0_100_100.subset_sum.out ../simulator/data/int_uniqWeights_simul10/cycloLen10_0_100_100.subset_sum.out ../simulator/data/int_uniqWeights_simul2/cycloLen11_0_121_121.subset_sum.out ../simulator/data/int_uniqWeights_simul3/cycloLen11_0_121_121.subset_sum.out ../simulator/data/int_uniqWeights_simul4/cycloLen11_0_121_121.subset_sum.out ../simulator/data/int_uniqWeights_simul5/cycloLen11_0_121_121.subset_sum.out ../simulator/data/int_uniqWeights_simul6/cycloLen11_0_121_121.subset_sum.out ../simulator/data/int_uniqWeights_simul7/cycloLen11_0_121_121.subset_sum.out ../simulator/data/int_uniqWeights_simul8/cycloLen11_0_121_121.subset_sum.out ../simulator/data/int_uniqWeights_simul9/cycloLen11_0_121_121.subset_sum.out ../simulator/data/int_uniqWeights_simul10/cycloLen11_0_121_121.subset_sum.out ../simulator/data/int_uniqWeights_simul2/cycloLen12_0_144_144.subset_sum.out ../simulator/data/int_uniqWeights_simul3/cycloLen12_0_144_144.subset_sum.out ../simulator/data/int_uniqWeights_simul4/cycloLen12_0_144_144.subset_sum.out ../simulator/data/int_uniqWeights_simul5/cycloLen12_0_144_144.subset_sum.out ../simulator/data/int_uniqWeights_simul6/cycloLen12_0_144_144.subset_sum.out ../simulator/data/int_uniqWeights_simul7/cycloLen12_0_144_144.subset_sum.out ../simulator/data/int_uniqWeights_simul8/cycloLen12_0_144_144.subset_sum.out ../simulator/data/int_uniqWeights_simul9/cycloLen12_0_144_144.subset_sum.out ../simulator/data/int_uniqWeights_simul10/cycloLen12_0_144_144.subset_sum.out ../simulator/data/int_uniqWeights_simul2/cycloLen13_0_169_169.subset_sum.out ../simulator/data/int_uniqWeights_simul3/cycloLen13_0_169_169.subset_sum.out ../simulator/data/int_uniqWeights_simul4/cycloLen13_0_169_169.subset_sum.out ../simulator/data/int_uniqWeights_simul5/cycloLen13_0_169_169.subset_sum.out ../simulator/data/int_uniqWeights_simul6/cycloLen13_0_169_169.subset_sum.out ../simulator/data/int_uniqWeights_simul7/cycloLen13_0_169_169.subset_sum.out ../simulator/data/int_uniqWeights_simul8/cycloLen13_0_169_169.subset_sum.out ../simulator/data/int_uniqWeights_simul9/cycloLen13_0_169_169.subset_sum.out ../simulator/data/int_uniqWeights_simul10/cycloLen13_0_169_169.subset_sum.out ../simulator/data/int_uniqWeights_simul2/cycloLen14_0_196_196.subset_sum.out ../simulator/data/int_uniqWeights_simul3/cycloLen14_0_196_196.subset_sum.out ../simulator/data/int_uniqWeights_simul4/cycloLen14_0_196_196.subset_sum.out ../simulator/data/int_uniqWeights_simul5/cycloLen14_0_196_196.subset_sum.out ../simulator/data/int_uniqWeights_simul6/cycloLen14_0_196_196.subset_sum.out ../simulator/data/int_uniqWeights_simul7/cycloLen14_0_196_196.subset_sum.out ../simulator/data/int_uniqWeights_simul8/cycloLen14_0_196_196.subset_sum.out ../simulator/data/int_uniqWeights_simul9/cycloLen14_0_196_196.subset_sum.out ../simulator/data/int_uniqWeights_simul10/cycloLen14_0_196_196.subset_sum.out ../simulator/data/int_uniqWeights_simul2/cycloLen15_0_225_225.subset_sum.out ../simulator/data/int_uniqWeights_simul3/cycloLen15_0_225_225.subset_sum.out ../simulator/data/int_uniqWeights_simul4/cycloLen15_0_225_225.subset_sum.out ../simulator/data/int_uniqWeights_simul5/cycloLen15_0_225_225.subset_sum.out ../simulator/data/int_uniqWeights_simul6/cycloLen15_0_225_225.subset_sum.out ../simulator/data/int_uniqWeights_simul7/cycloLen15_0_225_225.subset_sum.out ../simulator/data/int_uniqWeights_simul8/cycloLen15_0_225_225.subset_sum.out ../simulator/data/int_uniqWeights_simul9/cycloLen15_0_225_225.subset_sum.out ../simulator/data/int_uniqWeights_simul10/cycloLen15_0_225_225.subset_sum.out ../simulator/data/int_uniqWeights_simul2/cycloLen16_0_256_256.subset_sum.out ../simulator/data/int_uniqWeights_simul3/cycloLen16_0_256_256.subset_sum.out ../simulator/data/int_uniqWeights_simul4/cycloLen16_0_256_256.subset_sum.out ../simulator/data/int_uniqWeights_simul5/cycloLen16_0_256_256.subset_sum.out ../simulator/data/int_uniqWeights_simul6/cycloLen16_0_256_256.subset_sum.out ../simulator/data/int_uniqWeights_simul7/cycloLen16_0_256_256.subset_sum.out ../simulator/data/int_uniqWeights_simul8/cycloLen16_0_256_256.subset_sum.out ../simulator/data/int_uniqWeights_simul9/cycloLen16_0_256_256.subset_sum.out ../simulator/data/int_uniqWeights_simul10/cycloLen16_0_256_256.subset_sum.out ../simulator/data/int_uniqWeights_simul2/cycloLen17_0_289_289.subset_sum.out ../simulator/data/int_uniqWeights_simul3/cycloLen17_0_289_289.subset_sum.out ../simulator/data/int_uniqWeights_simul4/cycloLen17_0_289_289.subset_sum.out ../simulator/data/int_uniqWeights_simul5/cycloLen17_0_289_289.subset_sum.out ../simulator/data/int_uniqWeights_simul6/cycloLen17_0_289_289.subset_sum.out ../simulator/data/int_uniqWeights_simul7/cycloLen17_0_289_289.subset_sum.out ../simulator/data/int_uniqWeights_simul8/cycloLen17_0_289_289.subset_sum.out ../simulator/data/int_uniqWeights_simul9/cycloLen17_0_289_289.subset_sum.out ../simulator/data/int_uniqWeights_simul10/cycloLen17_0_289_289.subset_sum.out ../simulator/data/int_uniqWeights_simul2/cycloLen18_0_324_324.subset_sum.out ../simulator/data/int_uniqWeights_simul3/cycloLen18_0_324_324.subset_sum.out ../simulator/data/int_uniqWeights_simul4/cycloLen18_0_324_324.subset_sum.out ../simulator/data/int_uniqWeights_simul5/cycloLen18_0_324_324.subset_sum.out ../simulator/data/int_uniqWeights_simul6/cycloLen18_0_324_324.subset_sum.out ../simulator/data/int_uniqWeights_simul7/cycloLen18_0_324_324.subset_sum.out ../simulator/data/int_uniqWeights_simul8/cycloLen18_0_324_324.subset_sum.out ../simulator/data/int_uniqWeights_simul9/cycloLen18_0_324_324.subset_sum.out ../simulator/data/int_uniqWeights_simul10/cycloLen18_0_324_324.subset_sum.out ../simulator/data/int_uniqWeights_simul2/cycloLen19_0_361_361.subset_sum.out ../simulator/data/int_uniqWeights_simul3/cycloLen19_0_361_361.subset_sum.out ../simulator/data/int_uniqWeights_simul4/cycloLen19_0_361_361.subset_sum.out ../simulator/data/int_uniqWeights_simul5/cycloLen19_0_361_361.subset_sum.out ../simulator/data/int_uniqWeights_simul6/cycloLen19_0_361_361.subset_sum.out ../simulator/data/int_uniqWeights_simul7/cycloLen19_0_361_361.subset_sum.out ../simulator/data/int_uniqWeights_simul8/cycloLen19_0_361_361.subset_sum.out ../simulator/data/int_uniqWeights_simul9/cycloLen19_0_361_361.subset_sum.out ../simulator/data/int_uniqWeights_simul10/cycloLen19_0_361_361.subset_sum.out ../simulator/data/int_uniqWeights_simul2/cycloLen20_0_400_400.subset_sum.out ../simulator/data/int_uniqWeights_simul3/cycloLen20_0_400_400.subset_sum.out ../simulator/data/int_uniqWeights_simul4/cycloLen20_0_400_400.subset_sum.out ../simulator/data/int_uniqWeights_simul5/cycloLen20_0_400_400.subset_sum.out ../simulator/data/int_uniqWeights_simul6/cycloLen20_0_400_400.subset_sum.out ../simulator/data/int_uniqWeights_simul7/cycloLen20_0_400_400.subset_sum.out ../simulator/data/int_uniqWeights_simul8/cycloLen20_0_400_400.subset_sum.out ../simulator/data/int_uniqWeights_simul9/cycloLen20_0_400_400.subset_sum.out ../simulator/data/int_uniqWeights_simul10/cycloLen20_0_400_400.subset_sum.out 
+
+
+
+../simulator/data/int_uniqWeights_simul2/cycloLen5_0_25_25.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul2/cycloLen5_0_25_25.subset_sum.time ./test_subset_sum 5 ../simulator/data/int_uniqWeights_simul2/cycloLen5_0_25_25.txt | tee  ../simulator/data/int_uniqWeights_simul2/cycloLen5_0_25_25.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul2/cycloLen6_0_36_36.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul2/cycloLen6_0_36_36.subset_sum.time ./test_subset_sum 6 ../simulator/data/int_uniqWeights_simul2/cycloLen6_0_36_36.txt | tee  ../simulator/data/int_uniqWeights_simul2/cycloLen6_0_36_36.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul2/cycloLen7_0_49_49.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul2/cycloLen7_0_49_49.subset_sum.time ./test_subset_sum 7 ../simulator/data/int_uniqWeights_simul2/cycloLen7_0_49_49.txt | tee  ../simulator/data/int_uniqWeights_simul2/cycloLen7_0_49_49.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul2/cycloLen8_0_64_64.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul2/cycloLen8_0_64_64.subset_sum.time ./test_subset_sum 8 ../simulator/data/int_uniqWeights_simul2/cycloLen8_0_64_64.txt | tee  ../simulator/data/int_uniqWeights_simul2/cycloLen8_0_64_64.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul2/cycloLen9_0_81_81.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul2/cycloLen9_0_81_81.subset_sum.time ./test_subset_sum 9 ../simulator/data/int_uniqWeights_simul2/cycloLen9_0_81_81.txt | tee  ../simulator/data/int_uniqWeights_simul2/cycloLen9_0_81_81.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul2/cycloLen10_0_100_100.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul2/cycloLen10_0_100_100.subset_sum.time ./test_subset_sum 10 ../simulator/data/int_uniqWeights_simul2/cycloLen10_0_100_100.txt | tee  ../simulator/data/int_uniqWeights_simul2/cycloLen10_0_100_100.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul2/cycloLen11_0_121_121.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul2/cycloLen11_0_121_121.subset_sum.time ./test_subset_sum 11 ../simulator/data/int_uniqWeights_simul2/cycloLen11_0_121_121.txt | tee  ../simulator/data/int_uniqWeights_simul2/cycloLen11_0_121_121.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul2/cycloLen12_0_144_144.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul2/cycloLen12_0_144_144.subset_sum.time ./test_subset_sum 12 ../simulator/data/int_uniqWeights_simul2/cycloLen12_0_144_144.txt | tee  ../simulator/data/int_uniqWeights_simul2/cycloLen12_0_144_144.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul2/cycloLen13_0_169_169.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul2/cycloLen13_0_169_169.subset_sum.time ./test_subset_sum 13 ../simulator/data/int_uniqWeights_simul2/cycloLen13_0_169_169.txt | tee  ../simulator/data/int_uniqWeights_simul2/cycloLen13_0_169_169.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul2/cycloLen14_0_196_196.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul2/cycloLen14_0_196_196.subset_sum.time ./test_subset_sum 14 ../simulator/data/int_uniqWeights_simul2/cycloLen14_0_196_196.txt | tee  ../simulator/data/int_uniqWeights_simul2/cycloLen14_0_196_196.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul2/cycloLen15_0_225_225.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul2/cycloLen15_0_225_225.subset_sum.time ./test_subset_sum 15 ../simulator/data/int_uniqWeights_simul2/cycloLen15_0_225_225.txt | tee  ../simulator/data/int_uniqWeights_simul2/cycloLen15_0_225_225.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul2/cycloLen16_0_256_256.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul2/cycloLen16_0_256_256.subset_sum.time ./test_subset_sum 16 ../simulator/data/int_uniqWeights_simul2/cycloLen16_0_256_256.txt | tee  ../simulator/data/int_uniqWeights_simul2/cycloLen16_0_256_256.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul2/cycloLen17_0_289_289.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul2/cycloLen17_0_289_289.subset_sum.time ./test_subset_sum 17 ../simulator/data/int_uniqWeights_simul2/cycloLen17_0_289_289.txt | tee  ../simulator/data/int_uniqWeights_simul2/cycloLen17_0_289_289.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul2/cycloLen18_0_324_324.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul2/cycloLen18_0_324_324.subset_sum.time ./test_subset_sum 18 ../simulator/data/int_uniqWeights_simul2/cycloLen18_0_324_324.txt | tee  ../simulator/data/int_uniqWeights_simul2/cycloLen18_0_324_324.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul2/cycloLen19_0_361_361.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul2/cycloLen19_0_361_361.subset_sum.time ./test_subset_sum 19 ../simulator/data/int_uniqWeights_simul2/cycloLen19_0_361_361.txt | tee  ../simulator/data/int_uniqWeights_simul2/cycloLen19_0_361_361.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul2/cycloLen20_0_400_400.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul2/cycloLen20_0_400_400.subset_sum.time ./test_subset_sum 20 ../simulator/data/int_uniqWeights_simul2/cycloLen20_0_400_400.txt | tee  ../simulator/data/int_uniqWeights_simul2/cycloLen20_0_400_400.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul3/cycloLen5_0_25_25.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul3/cycloLen5_0_25_25.subset_sum.time ./test_subset_sum 5 ../simulator/data/int_uniqWeights_simul3/cycloLen5_0_25_25.txt | tee  ../simulator/data/int_uniqWeights_simul3/cycloLen5_0_25_25.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul3/cycloLen6_0_36_36.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul3/cycloLen6_0_36_36.subset_sum.time ./test_subset_sum 6 ../simulator/data/int_uniqWeights_simul3/cycloLen6_0_36_36.txt | tee  ../simulator/data/int_uniqWeights_simul3/cycloLen6_0_36_36.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul3/cycloLen7_0_49_49.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul3/cycloLen7_0_49_49.subset_sum.time ./test_subset_sum 7 ../simulator/data/int_uniqWeights_simul3/cycloLen7_0_49_49.txt | tee  ../simulator/data/int_uniqWeights_simul3/cycloLen7_0_49_49.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul3/cycloLen8_0_64_64.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul3/cycloLen8_0_64_64.subset_sum.time ./test_subset_sum 8 ../simulator/data/int_uniqWeights_simul3/cycloLen8_0_64_64.txt | tee  ../simulator/data/int_uniqWeights_simul3/cycloLen8_0_64_64.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul3/cycloLen9_0_81_81.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul3/cycloLen9_0_81_81.subset_sum.time ./test_subset_sum 9 ../simulator/data/int_uniqWeights_simul3/cycloLen9_0_81_81.txt | tee  ../simulator/data/int_uniqWeights_simul3/cycloLen9_0_81_81.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul3/cycloLen10_0_100_100.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul3/cycloLen10_0_100_100.subset_sum.time ./test_subset_sum 10 ../simulator/data/int_uniqWeights_simul3/cycloLen10_0_100_100.txt | tee  ../simulator/data/int_uniqWeights_simul3/cycloLen10_0_100_100.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul3/cycloLen11_0_121_121.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul3/cycloLen11_0_121_121.subset_sum.time ./test_subset_sum 11 ../simulator/data/int_uniqWeights_simul3/cycloLen11_0_121_121.txt | tee  ../simulator/data/int_uniqWeights_simul3/cycloLen11_0_121_121.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul3/cycloLen12_0_144_144.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul3/cycloLen12_0_144_144.subset_sum.time ./test_subset_sum 12 ../simulator/data/int_uniqWeights_simul3/cycloLen12_0_144_144.txt | tee  ../simulator/data/int_uniqWeights_simul3/cycloLen12_0_144_144.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul3/cycloLen13_0_169_169.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul3/cycloLen13_0_169_169.subset_sum.time ./test_subset_sum 13 ../simulator/data/int_uniqWeights_simul3/cycloLen13_0_169_169.txt | tee  ../simulator/data/int_uniqWeights_simul3/cycloLen13_0_169_169.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul3/cycloLen14_0_196_196.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul3/cycloLen14_0_196_196.subset_sum.time ./test_subset_sum 14 ../simulator/data/int_uniqWeights_simul3/cycloLen14_0_196_196.txt | tee  ../simulator/data/int_uniqWeights_simul3/cycloLen14_0_196_196.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul3/cycloLen15_0_225_225.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul3/cycloLen15_0_225_225.subset_sum.time ./test_subset_sum 15 ../simulator/data/int_uniqWeights_simul3/cycloLen15_0_225_225.txt | tee  ../simulator/data/int_uniqWeights_simul3/cycloLen15_0_225_225.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul3/cycloLen16_0_256_256.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul3/cycloLen16_0_256_256.subset_sum.time ./test_subset_sum 16 ../simulator/data/int_uniqWeights_simul3/cycloLen16_0_256_256.txt | tee  ../simulator/data/int_uniqWeights_simul3/cycloLen16_0_256_256.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul3/cycloLen17_0_289_289.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul3/cycloLen17_0_289_289.subset_sum.time ./test_subset_sum 17 ../simulator/data/int_uniqWeights_simul3/cycloLen17_0_289_289.txt | tee  ../simulator/data/int_uniqWeights_simul3/cycloLen17_0_289_289.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul3/cycloLen18_0_324_324.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul3/cycloLen18_0_324_324.subset_sum.time ./test_subset_sum 18 ../simulator/data/int_uniqWeights_simul3/cycloLen18_0_324_324.txt | tee  ../simulator/data/int_uniqWeights_simul3/cycloLen18_0_324_324.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul3/cycloLen19_0_361_361.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul3/cycloLen19_0_361_361.subset_sum.time ./test_subset_sum 19 ../simulator/data/int_uniqWeights_simul3/cycloLen19_0_361_361.txt | tee  ../simulator/data/int_uniqWeights_simul3/cycloLen19_0_361_361.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul3/cycloLen20_0_400_400.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul3/cycloLen20_0_400_400.subset_sum.time ./test_subset_sum 20 ../simulator/data/int_uniqWeights_simul3/cycloLen20_0_400_400.txt | tee  ../simulator/data/int_uniqWeights_simul3/cycloLen20_0_400_400.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul4/cycloLen5_0_25_25.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul4/cycloLen5_0_25_25.subset_sum.time ./test_subset_sum 5 ../simulator/data/int_uniqWeights_simul4/cycloLen5_0_25_25.txt | tee  ../simulator/data/int_uniqWeights_simul4/cycloLen5_0_25_25.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul4/cycloLen6_0_36_36.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul4/cycloLen6_0_36_36.subset_sum.time ./test_subset_sum 6 ../simulator/data/int_uniqWeights_simul4/cycloLen6_0_36_36.txt | tee  ../simulator/data/int_uniqWeights_simul4/cycloLen6_0_36_36.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul4/cycloLen7_0_49_49.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul4/cycloLen7_0_49_49.subset_sum.time ./test_subset_sum 7 ../simulator/data/int_uniqWeights_simul4/cycloLen7_0_49_49.txt | tee  ../simulator/data/int_uniqWeights_simul4/cycloLen7_0_49_49.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul4/cycloLen8_0_64_64.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul4/cycloLen8_0_64_64.subset_sum.time ./test_subset_sum 8 ../simulator/data/int_uniqWeights_simul4/cycloLen8_0_64_64.txt | tee  ../simulator/data/int_uniqWeights_simul4/cycloLen8_0_64_64.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul4/cycloLen9_0_81_81.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul4/cycloLen9_0_81_81.subset_sum.time ./test_subset_sum 9 ../simulator/data/int_uniqWeights_simul4/cycloLen9_0_81_81.txt | tee  ../simulator/data/int_uniqWeights_simul4/cycloLen9_0_81_81.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul4/cycloLen10_0_100_100.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul4/cycloLen10_0_100_100.subset_sum.time ./test_subset_sum 10 ../simulator/data/int_uniqWeights_simul4/cycloLen10_0_100_100.txt | tee  ../simulator/data/int_uniqWeights_simul4/cycloLen10_0_100_100.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul4/cycloLen11_0_121_121.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul4/cycloLen11_0_121_121.subset_sum.time ./test_subset_sum 11 ../simulator/data/int_uniqWeights_simul4/cycloLen11_0_121_121.txt | tee  ../simulator/data/int_uniqWeights_simul4/cycloLen11_0_121_121.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul4/cycloLen12_0_144_144.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul4/cycloLen12_0_144_144.subset_sum.time ./test_subset_sum 12 ../simulator/data/int_uniqWeights_simul4/cycloLen12_0_144_144.txt | tee  ../simulator/data/int_uniqWeights_simul4/cycloLen12_0_144_144.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul4/cycloLen13_0_169_169.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul4/cycloLen13_0_169_169.subset_sum.time ./test_subset_sum 13 ../simulator/data/int_uniqWeights_simul4/cycloLen13_0_169_169.txt | tee  ../simulator/data/int_uniqWeights_simul4/cycloLen13_0_169_169.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul4/cycloLen14_0_196_196.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul4/cycloLen14_0_196_196.subset_sum.time ./test_subset_sum 14 ../simulator/data/int_uniqWeights_simul4/cycloLen14_0_196_196.txt | tee  ../simulator/data/int_uniqWeights_simul4/cycloLen14_0_196_196.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul4/cycloLen15_0_225_225.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul4/cycloLen15_0_225_225.subset_sum.time ./test_subset_sum 15 ../simulator/data/int_uniqWeights_simul4/cycloLen15_0_225_225.txt | tee  ../simulator/data/int_uniqWeights_simul4/cycloLen15_0_225_225.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul4/cycloLen16_0_256_256.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul4/cycloLen16_0_256_256.subset_sum.time ./test_subset_sum 16 ../simulator/data/int_uniqWeights_simul4/cycloLen16_0_256_256.txt | tee  ../simulator/data/int_uniqWeights_simul4/cycloLen16_0_256_256.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul4/cycloLen17_0_289_289.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul4/cycloLen17_0_289_289.subset_sum.time ./test_subset_sum 17 ../simulator/data/int_uniqWeights_simul4/cycloLen17_0_289_289.txt | tee  ../simulator/data/int_uniqWeights_simul4/cycloLen17_0_289_289.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul4/cycloLen18_0_324_324.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul4/cycloLen18_0_324_324.subset_sum.time ./test_subset_sum 18 ../simulator/data/int_uniqWeights_simul4/cycloLen18_0_324_324.txt | tee  ../simulator/data/int_uniqWeights_simul4/cycloLen18_0_324_324.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul4/cycloLen19_0_361_361.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul4/cycloLen19_0_361_361.subset_sum.time ./test_subset_sum 19 ../simulator/data/int_uniqWeights_simul4/cycloLen19_0_361_361.txt | tee  ../simulator/data/int_uniqWeights_simul4/cycloLen19_0_361_361.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul4/cycloLen20_0_400_400.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul4/cycloLen20_0_400_400.subset_sum.time ./test_subset_sum 20 ../simulator/data/int_uniqWeights_simul4/cycloLen20_0_400_400.txt | tee  ../simulator/data/int_uniqWeights_simul4/cycloLen20_0_400_400.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul5/cycloLen5_0_25_25.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul5/cycloLen5_0_25_25.subset_sum.time ./test_subset_sum 5 ../simulator/data/int_uniqWeights_simul5/cycloLen5_0_25_25.txt | tee  ../simulator/data/int_uniqWeights_simul5/cycloLen5_0_25_25.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul5/cycloLen6_0_36_36.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul5/cycloLen6_0_36_36.subset_sum.time ./test_subset_sum 6 ../simulator/data/int_uniqWeights_simul5/cycloLen6_0_36_36.txt | tee  ../simulator/data/int_uniqWeights_simul5/cycloLen6_0_36_36.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul5/cycloLen7_0_49_49.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul5/cycloLen7_0_49_49.subset_sum.time ./test_subset_sum 7 ../simulator/data/int_uniqWeights_simul5/cycloLen7_0_49_49.txt | tee  ../simulator/data/int_uniqWeights_simul5/cycloLen7_0_49_49.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul5/cycloLen8_0_64_64.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul5/cycloLen8_0_64_64.subset_sum.time ./test_subset_sum 8 ../simulator/data/int_uniqWeights_simul5/cycloLen8_0_64_64.txt | tee  ../simulator/data/int_uniqWeights_simul5/cycloLen8_0_64_64.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul5/cycloLen9_0_81_81.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul5/cycloLen9_0_81_81.subset_sum.time ./test_subset_sum 9 ../simulator/data/int_uniqWeights_simul5/cycloLen9_0_81_81.txt | tee  ../simulator/data/int_uniqWeights_simul5/cycloLen9_0_81_81.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul5/cycloLen10_0_100_100.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul5/cycloLen10_0_100_100.subset_sum.time ./test_subset_sum 10 ../simulator/data/int_uniqWeights_simul5/cycloLen10_0_100_100.txt | tee  ../simulator/data/int_uniqWeights_simul5/cycloLen10_0_100_100.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul5/cycloLen11_0_121_121.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul5/cycloLen11_0_121_121.subset_sum.time ./test_subset_sum 11 ../simulator/data/int_uniqWeights_simul5/cycloLen11_0_121_121.txt | tee  ../simulator/data/int_uniqWeights_simul5/cycloLen11_0_121_121.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul5/cycloLen12_0_144_144.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul5/cycloLen12_0_144_144.subset_sum.time ./test_subset_sum 12 ../simulator/data/int_uniqWeights_simul5/cycloLen12_0_144_144.txt | tee  ../simulator/data/int_uniqWeights_simul5/cycloLen12_0_144_144.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul5/cycloLen13_0_169_169.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul5/cycloLen13_0_169_169.subset_sum.time ./test_subset_sum 13 ../simulator/data/int_uniqWeights_simul5/cycloLen13_0_169_169.txt | tee  ../simulator/data/int_uniqWeights_simul5/cycloLen13_0_169_169.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul5/cycloLen14_0_196_196.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul5/cycloLen14_0_196_196.subset_sum.time ./test_subset_sum 14 ../simulator/data/int_uniqWeights_simul5/cycloLen14_0_196_196.txt | tee  ../simulator/data/int_uniqWeights_simul5/cycloLen14_0_196_196.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul5/cycloLen15_0_225_225.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul5/cycloLen15_0_225_225.subset_sum.time ./test_subset_sum 15 ../simulator/data/int_uniqWeights_simul5/cycloLen15_0_225_225.txt | tee  ../simulator/data/int_uniqWeights_simul5/cycloLen15_0_225_225.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul5/cycloLen16_0_256_256.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul5/cycloLen16_0_256_256.subset_sum.time ./test_subset_sum 16 ../simulator/data/int_uniqWeights_simul5/cycloLen16_0_256_256.txt | tee  ../simulator/data/int_uniqWeights_simul5/cycloLen16_0_256_256.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul5/cycloLen17_0_289_289.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul5/cycloLen17_0_289_289.subset_sum.time ./test_subset_sum 17 ../simulator/data/int_uniqWeights_simul5/cycloLen17_0_289_289.txt | tee  ../simulator/data/int_uniqWeights_simul5/cycloLen17_0_289_289.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul5/cycloLen18_0_324_324.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul5/cycloLen18_0_324_324.subset_sum.time ./test_subset_sum 18 ../simulator/data/int_uniqWeights_simul5/cycloLen18_0_324_324.txt | tee  ../simulator/data/int_uniqWeights_simul5/cycloLen18_0_324_324.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul5/cycloLen19_0_361_361.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul5/cycloLen19_0_361_361.subset_sum.time ./test_subset_sum 19 ../simulator/data/int_uniqWeights_simul5/cycloLen19_0_361_361.txt | tee  ../simulator/data/int_uniqWeights_simul5/cycloLen19_0_361_361.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul5/cycloLen20_0_400_400.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul5/cycloLen20_0_400_400.subset_sum.time ./test_subset_sum 20 ../simulator/data/int_uniqWeights_simul5/cycloLen20_0_400_400.txt | tee  ../simulator/data/int_uniqWeights_simul5/cycloLen20_0_400_400.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul6/cycloLen5_0_25_25.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul6/cycloLen5_0_25_25.subset_sum.time ./test_subset_sum 5 ../simulator/data/int_uniqWeights_simul6/cycloLen5_0_25_25.txt | tee  ../simulator/data/int_uniqWeights_simul6/cycloLen5_0_25_25.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul6/cycloLen6_0_36_36.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul6/cycloLen6_0_36_36.subset_sum.time ./test_subset_sum 6 ../simulator/data/int_uniqWeights_simul6/cycloLen6_0_36_36.txt | tee  ../simulator/data/int_uniqWeights_simul6/cycloLen6_0_36_36.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul6/cycloLen7_0_49_49.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul6/cycloLen7_0_49_49.subset_sum.time ./test_subset_sum 7 ../simulator/data/int_uniqWeights_simul6/cycloLen7_0_49_49.txt | tee  ../simulator/data/int_uniqWeights_simul6/cycloLen7_0_49_49.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul6/cycloLen8_0_64_64.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul6/cycloLen8_0_64_64.subset_sum.time ./test_subset_sum 8 ../simulator/data/int_uniqWeights_simul6/cycloLen8_0_64_64.txt | tee  ../simulator/data/int_uniqWeights_simul6/cycloLen8_0_64_64.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul6/cycloLen9_0_81_81.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul6/cycloLen9_0_81_81.subset_sum.time ./test_subset_sum 9 ../simulator/data/int_uniqWeights_simul6/cycloLen9_0_81_81.txt | tee  ../simulator/data/int_uniqWeights_simul6/cycloLen9_0_81_81.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul6/cycloLen10_0_100_100.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul6/cycloLen10_0_100_100.subset_sum.time ./test_subset_sum 10 ../simulator/data/int_uniqWeights_simul6/cycloLen10_0_100_100.txt | tee  ../simulator/data/int_uniqWeights_simul6/cycloLen10_0_100_100.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul6/cycloLen11_0_121_121.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul6/cycloLen11_0_121_121.subset_sum.time ./test_subset_sum 11 ../simulator/data/int_uniqWeights_simul6/cycloLen11_0_121_121.txt | tee  ../simulator/data/int_uniqWeights_simul6/cycloLen11_0_121_121.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul6/cycloLen12_0_144_144.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul6/cycloLen12_0_144_144.subset_sum.time ./test_subset_sum 12 ../simulator/data/int_uniqWeights_simul6/cycloLen12_0_144_144.txt | tee  ../simulator/data/int_uniqWeights_simul6/cycloLen12_0_144_144.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul6/cycloLen13_0_169_169.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul6/cycloLen13_0_169_169.subset_sum.time ./test_subset_sum 13 ../simulator/data/int_uniqWeights_simul6/cycloLen13_0_169_169.txt | tee  ../simulator/data/int_uniqWeights_simul6/cycloLen13_0_169_169.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul6/cycloLen14_0_196_196.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul6/cycloLen14_0_196_196.subset_sum.time ./test_subset_sum 14 ../simulator/data/int_uniqWeights_simul6/cycloLen14_0_196_196.txt | tee  ../simulator/data/int_uniqWeights_simul6/cycloLen14_0_196_196.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul6/cycloLen15_0_225_225.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul6/cycloLen15_0_225_225.subset_sum.time ./test_subset_sum 15 ../simulator/data/int_uniqWeights_simul6/cycloLen15_0_225_225.txt | tee  ../simulator/data/int_uniqWeights_simul6/cycloLen15_0_225_225.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul6/cycloLen16_0_256_256.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul6/cycloLen16_0_256_256.subset_sum.time ./test_subset_sum 16 ../simulator/data/int_uniqWeights_simul6/cycloLen16_0_256_256.txt | tee  ../simulator/data/int_uniqWeights_simul6/cycloLen16_0_256_256.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul6/cycloLen17_0_289_289.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul6/cycloLen17_0_289_289.subset_sum.time ./test_subset_sum 17 ../simulator/data/int_uniqWeights_simul6/cycloLen17_0_289_289.txt | tee  ../simulator/data/int_uniqWeights_simul6/cycloLen17_0_289_289.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul6/cycloLen18_0_324_324.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul6/cycloLen18_0_324_324.subset_sum.time ./test_subset_sum 18 ../simulator/data/int_uniqWeights_simul6/cycloLen18_0_324_324.txt | tee  ../simulator/data/int_uniqWeights_simul6/cycloLen18_0_324_324.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul6/cycloLen19_0_361_361.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul6/cycloLen19_0_361_361.subset_sum.time ./test_subset_sum 19 ../simulator/data/int_uniqWeights_simul6/cycloLen19_0_361_361.txt | tee  ../simulator/data/int_uniqWeights_simul6/cycloLen19_0_361_361.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul6/cycloLen20_0_400_400.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul6/cycloLen20_0_400_400.subset_sum.time ./test_subset_sum 20 ../simulator/data/int_uniqWeights_simul6/cycloLen20_0_400_400.txt | tee  ../simulator/data/int_uniqWeights_simul6/cycloLen20_0_400_400.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul7/cycloLen5_0_25_25.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul7/cycloLen5_0_25_25.subset_sum.time ./test_subset_sum 5 ../simulator/data/int_uniqWeights_simul7/cycloLen5_0_25_25.txt | tee  ../simulator/data/int_uniqWeights_simul7/cycloLen5_0_25_25.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul7/cycloLen6_0_36_36.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul7/cycloLen6_0_36_36.subset_sum.time ./test_subset_sum 6 ../simulator/data/int_uniqWeights_simul7/cycloLen6_0_36_36.txt | tee  ../simulator/data/int_uniqWeights_simul7/cycloLen6_0_36_36.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul7/cycloLen7_0_49_49.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul7/cycloLen7_0_49_49.subset_sum.time ./test_subset_sum 7 ../simulator/data/int_uniqWeights_simul7/cycloLen7_0_49_49.txt | tee  ../simulator/data/int_uniqWeights_simul7/cycloLen7_0_49_49.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul7/cycloLen8_0_64_64.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul7/cycloLen8_0_64_64.subset_sum.time ./test_subset_sum 8 ../simulator/data/int_uniqWeights_simul7/cycloLen8_0_64_64.txt | tee  ../simulator/data/int_uniqWeights_simul7/cycloLen8_0_64_64.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul7/cycloLen9_0_81_81.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul7/cycloLen9_0_81_81.subset_sum.time ./test_subset_sum 9 ../simulator/data/int_uniqWeights_simul7/cycloLen9_0_81_81.txt | tee  ../simulator/data/int_uniqWeights_simul7/cycloLen9_0_81_81.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul7/cycloLen10_0_100_100.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul7/cycloLen10_0_100_100.subset_sum.time ./test_subset_sum 10 ../simulator/data/int_uniqWeights_simul7/cycloLen10_0_100_100.txt | tee  ../simulator/data/int_uniqWeights_simul7/cycloLen10_0_100_100.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul7/cycloLen11_0_121_121.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul7/cycloLen11_0_121_121.subset_sum.time ./test_subset_sum 11 ../simulator/data/int_uniqWeights_simul7/cycloLen11_0_121_121.txt | tee  ../simulator/data/int_uniqWeights_simul7/cycloLen11_0_121_121.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul7/cycloLen12_0_144_144.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul7/cycloLen12_0_144_144.subset_sum.time ./test_subset_sum 12 ../simulator/data/int_uniqWeights_simul7/cycloLen12_0_144_144.txt | tee  ../simulator/data/int_uniqWeights_simul7/cycloLen12_0_144_144.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul7/cycloLen13_0_169_169.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul7/cycloLen13_0_169_169.subset_sum.time ./test_subset_sum 13 ../simulator/data/int_uniqWeights_simul7/cycloLen13_0_169_169.txt | tee  ../simulator/data/int_uniqWeights_simul7/cycloLen13_0_169_169.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul7/cycloLen14_0_196_196.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul7/cycloLen14_0_196_196.subset_sum.time ./test_subset_sum 14 ../simulator/data/int_uniqWeights_simul7/cycloLen14_0_196_196.txt | tee  ../simulator/data/int_uniqWeights_simul7/cycloLen14_0_196_196.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul7/cycloLen15_0_225_225.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul7/cycloLen15_0_225_225.subset_sum.time ./test_subset_sum 15 ../simulator/data/int_uniqWeights_simul7/cycloLen15_0_225_225.txt | tee  ../simulator/data/int_uniqWeights_simul7/cycloLen15_0_225_225.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul7/cycloLen16_0_256_256.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul7/cycloLen16_0_256_256.subset_sum.time ./test_subset_sum 16 ../simulator/data/int_uniqWeights_simul7/cycloLen16_0_256_256.txt | tee  ../simulator/data/int_uniqWeights_simul7/cycloLen16_0_256_256.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul7/cycloLen17_0_289_289.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul7/cycloLen17_0_289_289.subset_sum.time ./test_subset_sum 17 ../simulator/data/int_uniqWeights_simul7/cycloLen17_0_289_289.txt | tee  ../simulator/data/int_uniqWeights_simul7/cycloLen17_0_289_289.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul7/cycloLen18_0_324_324.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul7/cycloLen18_0_324_324.subset_sum.time ./test_subset_sum 18 ../simulator/data/int_uniqWeights_simul7/cycloLen18_0_324_324.txt | tee  ../simulator/data/int_uniqWeights_simul7/cycloLen18_0_324_324.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul7/cycloLen19_0_361_361.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul7/cycloLen19_0_361_361.subset_sum.time ./test_subset_sum 19 ../simulator/data/int_uniqWeights_simul7/cycloLen19_0_361_361.txt | tee  ../simulator/data/int_uniqWeights_simul7/cycloLen19_0_361_361.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul7/cycloLen20_0_400_400.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul7/cycloLen20_0_400_400.subset_sum.time ./test_subset_sum 20 ../simulator/data/int_uniqWeights_simul7/cycloLen20_0_400_400.txt | tee  ../simulator/data/int_uniqWeights_simul7/cycloLen20_0_400_400.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul8/cycloLen5_0_25_25.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul8/cycloLen5_0_25_25.subset_sum.time ./test_subset_sum 5 ../simulator/data/int_uniqWeights_simul8/cycloLen5_0_25_25.txt | tee  ../simulator/data/int_uniqWeights_simul8/cycloLen5_0_25_25.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul8/cycloLen6_0_36_36.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul8/cycloLen6_0_36_36.subset_sum.time ./test_subset_sum 6 ../simulator/data/int_uniqWeights_simul8/cycloLen6_0_36_36.txt | tee  ../simulator/data/int_uniqWeights_simul8/cycloLen6_0_36_36.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul8/cycloLen7_0_49_49.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul8/cycloLen7_0_49_49.subset_sum.time ./test_subset_sum 7 ../simulator/data/int_uniqWeights_simul8/cycloLen7_0_49_49.txt | tee  ../simulator/data/int_uniqWeights_simul8/cycloLen7_0_49_49.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul8/cycloLen8_0_64_64.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul8/cycloLen8_0_64_64.subset_sum.time ./test_subset_sum 8 ../simulator/data/int_uniqWeights_simul8/cycloLen8_0_64_64.txt | tee  ../simulator/data/int_uniqWeights_simul8/cycloLen8_0_64_64.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul8/cycloLen9_0_81_81.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul8/cycloLen9_0_81_81.subset_sum.time ./test_subset_sum 9 ../simulator/data/int_uniqWeights_simul8/cycloLen9_0_81_81.txt | tee  ../simulator/data/int_uniqWeights_simul8/cycloLen9_0_81_81.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul8/cycloLen10_0_100_100.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul8/cycloLen10_0_100_100.subset_sum.time ./test_subset_sum 10 ../simulator/data/int_uniqWeights_simul8/cycloLen10_0_100_100.txt | tee  ../simulator/data/int_uniqWeights_simul8/cycloLen10_0_100_100.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul8/cycloLen11_0_121_121.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul8/cycloLen11_0_121_121.subset_sum.time ./test_subset_sum 11 ../simulator/data/int_uniqWeights_simul8/cycloLen11_0_121_121.txt | tee  ../simulator/data/int_uniqWeights_simul8/cycloLen11_0_121_121.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul8/cycloLen12_0_144_144.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul8/cycloLen12_0_144_144.subset_sum.time ./test_subset_sum 12 ../simulator/data/int_uniqWeights_simul8/cycloLen12_0_144_144.txt | tee  ../simulator/data/int_uniqWeights_simul8/cycloLen12_0_144_144.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul8/cycloLen13_0_169_169.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul8/cycloLen13_0_169_169.subset_sum.time ./test_subset_sum 13 ../simulator/data/int_uniqWeights_simul8/cycloLen13_0_169_169.txt | tee  ../simulator/data/int_uniqWeights_simul8/cycloLen13_0_169_169.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul8/cycloLen14_0_196_196.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul8/cycloLen14_0_196_196.subset_sum.time ./test_subset_sum 14 ../simulator/data/int_uniqWeights_simul8/cycloLen14_0_196_196.txt | tee  ../simulator/data/int_uniqWeights_simul8/cycloLen14_0_196_196.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul8/cycloLen15_0_225_225.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul8/cycloLen15_0_225_225.subset_sum.time ./test_subset_sum 15 ../simulator/data/int_uniqWeights_simul8/cycloLen15_0_225_225.txt | tee  ../simulator/data/int_uniqWeights_simul8/cycloLen15_0_225_225.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul8/cycloLen16_0_256_256.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul8/cycloLen16_0_256_256.subset_sum.time ./test_subset_sum 16 ../simulator/data/int_uniqWeights_simul8/cycloLen16_0_256_256.txt | tee  ../simulator/data/int_uniqWeights_simul8/cycloLen16_0_256_256.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul8/cycloLen17_0_289_289.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul8/cycloLen17_0_289_289.subset_sum.time ./test_subset_sum 17 ../simulator/data/int_uniqWeights_simul8/cycloLen17_0_289_289.txt | tee  ../simulator/data/int_uniqWeights_simul8/cycloLen17_0_289_289.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul8/cycloLen18_0_324_324.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul8/cycloLen18_0_324_324.subset_sum.time ./test_subset_sum 18 ../simulator/data/int_uniqWeights_simul8/cycloLen18_0_324_324.txt | tee  ../simulator/data/int_uniqWeights_simul8/cycloLen18_0_324_324.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul8/cycloLen19_0_361_361.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul8/cycloLen19_0_361_361.subset_sum.time ./test_subset_sum 19 ../simulator/data/int_uniqWeights_simul8/cycloLen19_0_361_361.txt | tee  ../simulator/data/int_uniqWeights_simul8/cycloLen19_0_361_361.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul8/cycloLen20_0_400_400.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul8/cycloLen20_0_400_400.subset_sum.time ./test_subset_sum 20 ../simulator/data/int_uniqWeights_simul8/cycloLen20_0_400_400.txt | tee  ../simulator/data/int_uniqWeights_simul8/cycloLen20_0_400_400.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul9/cycloLen5_0_25_25.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul9/cycloLen5_0_25_25.subset_sum.time ./test_subset_sum 5 ../simulator/data/int_uniqWeights_simul9/cycloLen5_0_25_25.txt | tee  ../simulator/data/int_uniqWeights_simul9/cycloLen5_0_25_25.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul9/cycloLen6_0_36_36.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul9/cycloLen6_0_36_36.subset_sum.time ./test_subset_sum 6 ../simulator/data/int_uniqWeights_simul9/cycloLen6_0_36_36.txt | tee  ../simulator/data/int_uniqWeights_simul9/cycloLen6_0_36_36.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul9/cycloLen7_0_49_49.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul9/cycloLen7_0_49_49.subset_sum.time ./test_subset_sum 7 ../simulator/data/int_uniqWeights_simul9/cycloLen7_0_49_49.txt | tee  ../simulator/data/int_uniqWeights_simul9/cycloLen7_0_49_49.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul9/cycloLen8_0_64_64.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul9/cycloLen8_0_64_64.subset_sum.time ./test_subset_sum 8 ../simulator/data/int_uniqWeights_simul9/cycloLen8_0_64_64.txt | tee  ../simulator/data/int_uniqWeights_simul9/cycloLen8_0_64_64.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul9/cycloLen9_0_81_81.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul9/cycloLen9_0_81_81.subset_sum.time ./test_subset_sum 9 ../simulator/data/int_uniqWeights_simul9/cycloLen9_0_81_81.txt | tee  ../simulator/data/int_uniqWeights_simul9/cycloLen9_0_81_81.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul9/cycloLen10_0_100_100.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul9/cycloLen10_0_100_100.subset_sum.time ./test_subset_sum 10 ../simulator/data/int_uniqWeights_simul9/cycloLen10_0_100_100.txt | tee  ../simulator/data/int_uniqWeights_simul9/cycloLen10_0_100_100.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul9/cycloLen11_0_121_121.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul9/cycloLen11_0_121_121.subset_sum.time ./test_subset_sum 11 ../simulator/data/int_uniqWeights_simul9/cycloLen11_0_121_121.txt | tee  ../simulator/data/int_uniqWeights_simul9/cycloLen11_0_121_121.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul9/cycloLen12_0_144_144.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul9/cycloLen12_0_144_144.subset_sum.time ./test_subset_sum 12 ../simulator/data/int_uniqWeights_simul9/cycloLen12_0_144_144.txt | tee  ../simulator/data/int_uniqWeights_simul9/cycloLen12_0_144_144.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul9/cycloLen13_0_169_169.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul9/cycloLen13_0_169_169.subset_sum.time ./test_subset_sum 13 ../simulator/data/int_uniqWeights_simul9/cycloLen13_0_169_169.txt | tee  ../simulator/data/int_uniqWeights_simul9/cycloLen13_0_169_169.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul9/cycloLen14_0_196_196.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul9/cycloLen14_0_196_196.subset_sum.time ./test_subset_sum 14 ../simulator/data/int_uniqWeights_simul9/cycloLen14_0_196_196.txt | tee  ../simulator/data/int_uniqWeights_simul9/cycloLen14_0_196_196.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul9/cycloLen15_0_225_225.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul9/cycloLen15_0_225_225.subset_sum.time ./test_subset_sum 15 ../simulator/data/int_uniqWeights_simul9/cycloLen15_0_225_225.txt | tee  ../simulator/data/int_uniqWeights_simul9/cycloLen15_0_225_225.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul9/cycloLen16_0_256_256.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul9/cycloLen16_0_256_256.subset_sum.time ./test_subset_sum 16 ../simulator/data/int_uniqWeights_simul9/cycloLen16_0_256_256.txt | tee  ../simulator/data/int_uniqWeights_simul9/cycloLen16_0_256_256.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul9/cycloLen17_0_289_289.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul9/cycloLen17_0_289_289.subset_sum.time ./test_subset_sum 17 ../simulator/data/int_uniqWeights_simul9/cycloLen17_0_289_289.txt | tee  ../simulator/data/int_uniqWeights_simul9/cycloLen17_0_289_289.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul9/cycloLen18_0_324_324.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul9/cycloLen18_0_324_324.subset_sum.time ./test_subset_sum 18 ../simulator/data/int_uniqWeights_simul9/cycloLen18_0_324_324.txt | tee  ../simulator/data/int_uniqWeights_simul9/cycloLen18_0_324_324.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul9/cycloLen19_0_361_361.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul9/cycloLen19_0_361_361.subset_sum.time ./test_subset_sum 19 ../simulator/data/int_uniqWeights_simul9/cycloLen19_0_361_361.txt | tee  ../simulator/data/int_uniqWeights_simul9/cycloLen19_0_361_361.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul9/cycloLen20_0_400_400.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul9/cycloLen20_0_400_400.subset_sum.time ./test_subset_sum 20 ../simulator/data/int_uniqWeights_simul9/cycloLen20_0_400_400.txt | tee  ../simulator/data/int_uniqWeights_simul9/cycloLen20_0_400_400.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul10/cycloLen5_0_25_25.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul10/cycloLen5_0_25_25.subset_sum.time ./test_subset_sum 5 ../simulator/data/int_uniqWeights_simul10/cycloLen5_0_25_25.txt | tee  ../simulator/data/int_uniqWeights_simul10/cycloLen5_0_25_25.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul10/cycloLen6_0_36_36.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul10/cycloLen6_0_36_36.subset_sum.time ./test_subset_sum 6 ../simulator/data/int_uniqWeights_simul10/cycloLen6_0_36_36.txt | tee  ../simulator/data/int_uniqWeights_simul10/cycloLen6_0_36_36.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul10/cycloLen7_0_49_49.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul10/cycloLen7_0_49_49.subset_sum.time ./test_subset_sum 7 ../simulator/data/int_uniqWeights_simul10/cycloLen7_0_49_49.txt | tee  ../simulator/data/int_uniqWeights_simul10/cycloLen7_0_49_49.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul10/cycloLen8_0_64_64.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul10/cycloLen8_0_64_64.subset_sum.time ./test_subset_sum 8 ../simulator/data/int_uniqWeights_simul10/cycloLen8_0_64_64.txt | tee  ../simulator/data/int_uniqWeights_simul10/cycloLen8_0_64_64.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul10/cycloLen9_0_81_81.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul10/cycloLen9_0_81_81.subset_sum.time ./test_subset_sum 9 ../simulator/data/int_uniqWeights_simul10/cycloLen9_0_81_81.txt | tee  ../simulator/data/int_uniqWeights_simul10/cycloLen9_0_81_81.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul10/cycloLen10_0_100_100.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul10/cycloLen10_0_100_100.subset_sum.time ./test_subset_sum 10 ../simulator/data/int_uniqWeights_simul10/cycloLen10_0_100_100.txt | tee  ../simulator/data/int_uniqWeights_simul10/cycloLen10_0_100_100.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul10/cycloLen11_0_121_121.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul10/cycloLen11_0_121_121.subset_sum.time ./test_subset_sum 11 ../simulator/data/int_uniqWeights_simul10/cycloLen11_0_121_121.txt | tee  ../simulator/data/int_uniqWeights_simul10/cycloLen11_0_121_121.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul10/cycloLen12_0_144_144.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul10/cycloLen12_0_144_144.subset_sum.time ./test_subset_sum 12 ../simulator/data/int_uniqWeights_simul10/cycloLen12_0_144_144.txt | tee  ../simulator/data/int_uniqWeights_simul10/cycloLen12_0_144_144.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul10/cycloLen13_0_169_169.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul10/cycloLen13_0_169_169.subset_sum.time ./test_subset_sum 13 ../simulator/data/int_uniqWeights_simul10/cycloLen13_0_169_169.txt | tee  ../simulator/data/int_uniqWeights_simul10/cycloLen13_0_169_169.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul10/cycloLen14_0_196_196.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul10/cycloLen14_0_196_196.subset_sum.time ./test_subset_sum 14 ../simulator/data/int_uniqWeights_simul10/cycloLen14_0_196_196.txt | tee  ../simulator/data/int_uniqWeights_simul10/cycloLen14_0_196_196.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul10/cycloLen15_0_225_225.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul10/cycloLen15_0_225_225.subset_sum.time ./test_subset_sum 15 ../simulator/data/int_uniqWeights_simul10/cycloLen15_0_225_225.txt | tee  ../simulator/data/int_uniqWeights_simul10/cycloLen15_0_225_225.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul10/cycloLen16_0_256_256.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul10/cycloLen16_0_256_256.subset_sum.time ./test_subset_sum 16 ../simulator/data/int_uniqWeights_simul10/cycloLen16_0_256_256.txt | tee  ../simulator/data/int_uniqWeights_simul10/cycloLen16_0_256_256.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul10/cycloLen17_0_289_289.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul10/cycloLen17_0_289_289.subset_sum.time ./test_subset_sum 17 ../simulator/data/int_uniqWeights_simul10/cycloLen17_0_289_289.txt | tee  ../simulator/data/int_uniqWeights_simul10/cycloLen17_0_289_289.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul10/cycloLen18_0_324_324.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul10/cycloLen18_0_324_324.subset_sum.time ./test_subset_sum 18 ../simulator/data/int_uniqWeights_simul10/cycloLen18_0_324_324.txt | tee  ../simulator/data/int_uniqWeights_simul10/cycloLen18_0_324_324.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul10/cycloLen19_0_361_361.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul10/cycloLen19_0_361_361.subset_sum.time ./test_subset_sum 19 ../simulator/data/int_uniqWeights_simul10/cycloLen19_0_361_361.txt | tee  ../simulator/data/int_uniqWeights_simul10/cycloLen19_0_361_361.subset_sum.out 
+
+
+../simulator/data/int_uniqWeights_simul10/cycloLen20_0_400_400.subset_sum.out:
+	/usr/bin/time -v -o ../simulator/data/int_uniqWeights_simul10/cycloLen20_0_400_400.subset_sum.time ./test_subset_sum 20 ../simulator/data/int_uniqWeights_simul10/cycloLen20_0_400_400.txt | tee  ../simulator/data/int_uniqWeights_simul10/cycloLen20_0_400_400.subset_sum.out 
