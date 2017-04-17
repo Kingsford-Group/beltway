@@ -60,8 +60,7 @@ class SubsetSum{
 
     public:
         SubsetSum(int, istream&);
-
-    private:
+        
     	int k;
     	vector<int> spectrum;
         vector< vector< pointer > > sum_array;
@@ -70,7 +69,9 @@ class SubsetSum{
         vector< Kpath* > kcycles;
         int max_value;
         bool** valid_to_include;
-	vector< Recursive_call* >  call_queue;
+	    vector< Recursive_call* >  call_queue;
+	    
+	    void recover_k_paths();
 
         vector< Kpath* > recursive_set_recover(Recursive_call*);
         void recover_sets();

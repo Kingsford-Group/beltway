@@ -460,6 +460,10 @@ SubsetSum::SubsetSum(int kin, istream& f){
 
 
     subset_sum();
+
+}
+
+void SubsetSum::recover_k_paths(){
     cerr << "Between Sum and Find Paths..." << endl;
 	find_paths();
     cerr << "Between Find Paths and Recover..." << endl;
@@ -518,5 +522,5 @@ SubsetSum::SubsetSum(int kin, istream& f){
             cout << ": " << verified[i] << endl;
 		}
 	}
-
+	
 }

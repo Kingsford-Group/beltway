@@ -6,4 +6,6 @@ int main(int argc, char* argv[]){
     ifstream f(argv[2]);
 
     SubsetSum s = SubsetSum(atoi(argv[1]),f);
+    
+    s.recover_k_paths();
 }
