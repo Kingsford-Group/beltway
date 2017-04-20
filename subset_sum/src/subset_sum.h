@@ -79,6 +79,9 @@ class SubsetSum{
         void subset_sum();
         bool match_by_rotation_reversal(int, int);
         int verify_with_theoretical_spectrum(int a);
+        
+        void clean();
+        void prune_edges();
 
 };
 

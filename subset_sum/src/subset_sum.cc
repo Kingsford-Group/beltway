@@ -463,9 +463,32 @@ SubsetSum::SubsetSum(int kin, istream& f){
 
 }
 
-void SubsetSum::recover_k_paths(){
+void SubsetSum::prune_edges(){
+    int locations_removed = 0;
+    for(int i=0;i<max_value;i++){
+        bool keep = paths[0][i][k] || paths[1][i][k];
+        
+	    for(int j=1;j<k;j++){
+	        keep |= (paths[0][i][j] && paths[0][i][k-j]);
+	    }
+	    
+	    if(!keep){
+	        sum_array[i].clear();
+	        locations_removed++;
+	    }
+    }
+    cout << "Locations pruned: " << locations_removed << endl;
+}
+
+void SubsetSum::clean(){
     cerr << "Between Sum and Find Paths..." << endl;
 	find_paths();
+	
+	prune_edges();
+}
+
+void SubsetSum::recover_k_paths(){
+
     cerr << "Between Find Paths and Recover..." << endl;
 	recover_sets();
 	cerr << "Between Recover and Distinct..." << endl;
