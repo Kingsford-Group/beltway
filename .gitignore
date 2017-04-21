@@ -1,0 +1,8 @@
+*.o
+.deps
+.deps/*
+Makefile
+Makefile.in
+subset_sum_ilp
+subset_sum_maxflow
+test_subset_sum
