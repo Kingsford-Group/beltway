@@ -83,6 +83,7 @@ class SubsetSum{
         void clean();
         void prune_edges();
 
+		void analyze_degree_distribution() const;
 };
 
 #endif

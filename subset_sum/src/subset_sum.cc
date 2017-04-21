@@ -1,5 +1,5 @@
 #include "subset_sum.h"
-
+#include <map>
 
 using namespace std;
 
@@ -546,4 +546,21 @@ void SubsetSum::recover_k_paths(){
 		}
 	}
 	
+}
+
+void SubsetSum::analyze_degree_distribution() const
+{
+	map<int, int> m;
+	for(int i = 0; i < sum_array.size(); i++)
+	{
+		int k = sum_array[i].size();
+		if(m.find(k) == m.end()) m.insert(pair<int, int>(k, 1));
+		else m[k]++;
+	}
+	for(map<int, int>::iterator it = m.begin(); it != m.end(); it++)
+	{
+		int k = it->first;
+		int c = it->second;
+		printf("sumsetsum graph %d vertices has degree of %d\n", c, k);
+	}
 }

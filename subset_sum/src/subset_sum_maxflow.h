@@ -21,7 +21,6 @@ public:
 	const SubsetSum &sss;
 	double alpha;
 	DiGraph gr;
-	MED e2w;
 
 public:
 	int solve();
@@ -29,6 +28,8 @@ public:
 
 public:
 	int build_graph();
+	int build_test_graph();
+	int compute_maxflow();
 };
 
 #endif
