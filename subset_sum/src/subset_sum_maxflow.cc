@@ -1,8 +1,11 @@
 #include "subset_sum_maxflow.h"
+#include <cfloat>
 
 SubsetSumMaxflow::SubsetSumMaxflow(const SubsetSum &ss)
 	:sss(ss)
-{}
+{
+	alpha = sss.k;
+}
 
 int SubsetSumMaxflow::solve()
 {
@@ -24,7 +27,9 @@ int SubsetSumMaxflow::build_graph()
 	for(int i = 0; i < sss.sum_array.size(); i++) 
 	{
 		add_vertex(gr);
-		add_edge(0, i + 1, gr);
+		PEB p = add_edge(0, i + 1, gr);
+		assert(p.second == true);
+		e2w.insert(PED(p.first, alpha));
 	}
 
 	// [sum_array.size() + 1, X) -> sss.edges
@@ -35,8 +40,12 @@ int SubsetSumMaxflow::build_graph()
 			int k = sss.sum_array[i][j].next_index;
 			int n = num_vertices(gr);
 			add_vertex(gr);
-			add_edge(i + 1, n, gr);
-			add_edge(k + 1, n, gr);
+			PEB p1 = add_edge(i + 1, n, gr);
+			PEB p2 = add_edge(k + 1, n, gr);
+			assert(p1.second == true);
+			assert(p2.second == true);
+			e2w.insert(PED(p1.first, DBL_MAX));
+			e2w.insert(PED(p2.first, DBL_MAX));
 		}
 	}
 
@@ -45,7 +54,9 @@ int SubsetSumMaxflow::build_graph()
 	add_vertex(gr);
 	for(int i = sss.sum_array.size() + 1; i < n; i++)
 	{
-		add_edge(i, n, gr);
+		PEB p = add_edge(i, n, gr);
+		assert(p.second == true);
+		e2w.insert(PED(p.first, 1.0));
 	}
 
 	return 0;

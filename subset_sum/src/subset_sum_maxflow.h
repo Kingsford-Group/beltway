@@ -3,8 +3,14 @@
 
 #include "subset_sum.h"
 #include "mygraph.h"
+#include <map>
 
 using namespace std;
+
+typedef pair<edge_descriptor, bool> PEB;
+typedef pair<edge_descriptor, double> PED;
+typedef map<edge_descriptor, double> MED;
+
 
 class SubsetSumMaxflow
 {
@@ -13,7 +19,9 @@ public:
 	
 public:
 	const SubsetSum &sss;
+	double alpha;
 	DiGraph gr;
+	MED e2w;
 
 public:
 	int solve();
